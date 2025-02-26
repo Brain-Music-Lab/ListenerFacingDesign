@@ -1,4 +1,4 @@
 .idea
 *venv*
-psychopy-apps/*
+/psychopy-apps/*
 build
