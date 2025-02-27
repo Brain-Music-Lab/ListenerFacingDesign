@@ -1,2 +1,7 @@
 .idea
 *venv*
+.psychopy_py310
+data
+build
+__pycache__
+.demos
