@@ -1,5 +1,5 @@
-int slider_input_pin = A0;
-int touch_input_pin = A1;
+int slider_input_pin = A0; //slider position
+int touch_input_pin = A1; //capacitive touch detection **NOT WORKING
 int motor_pin_1 = 5; //use pwm pin
 int motor_pin_2 = 6; //use pwm pin
 
@@ -21,7 +21,7 @@ void setup() {
 void loop() {
   // pick a test function and uncomment it:
 
-  //read_slider_position();
+  read_slider_position();
   //move_slider();
   //reset_to_zero();
   //reset_to_middle();
@@ -34,6 +34,8 @@ void read_slider_position() {
 }
 
 void detect_touch() {
+  //detects when slider knob is touched (capacitive touch sensor)
+  //** THIS FUNCTIONALITY IS CURRENTLY NOT WORKING (might be microcontroller specific)
   Serial.println(analogRead(touch_input_pin));
   delay(50);
 }
@@ -115,6 +117,7 @@ void reset_to_zero() {
 
 void reset_to_middle() {
   //slider will return to middle position 5s after user input
+  //**NOTE: this function is more buggy compared to the return to zero... might need more troubleshooting.
   int fader_pos = int(analogRead(slider_input_pin)/4); //initial position
 
   //wait for slider to move
