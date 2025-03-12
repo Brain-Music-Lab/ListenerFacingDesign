@@ -1,4 +1,8 @@
 .idea
 *venv*
-/psychopy-apps/*
+.psychopy_py310
+data
 build
+__pycache__
+.demos
+/psychopy-apps/*
