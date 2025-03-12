@@ -1,3 +1,5 @@
 [submodule "psychopy-projects/"]
 	path = psychopy-projects
+	url = git@github.com:Brain-Music-Lab/psychopy-projects.git
+[submodule "psychopy-projects/"]
 	url = https://github.com/Brain-Music-Lab/psychopy-projects.git
