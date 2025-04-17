@@ -1,8 +1,5 @@
 #! /usr/bin/bash
 
-# Save current directory
-pushd .
-
 # Go to current directory
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
