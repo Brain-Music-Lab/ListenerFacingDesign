@@ -7,3 +7,4 @@ __pycache__
 .demos
 /psychopy-apps/*
 /image
+.env
