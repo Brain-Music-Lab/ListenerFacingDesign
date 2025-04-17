@@ -1,10 +1,5 @@
 #! /usr/bin/bash
 
-if [ "$EUID" -ne 0 ]; then
-    echo "This script must be run as root"
-    exit 1
-fi
-
 # Go to current directory
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -41,7 +36,6 @@ if [ -z "$python_version" ]; then
     exit 1
 fi
 
-apt-get install -y build-essential libgtk-3-dev
 pip install --upgrade pip
 pip install -r requirements.txt
     
