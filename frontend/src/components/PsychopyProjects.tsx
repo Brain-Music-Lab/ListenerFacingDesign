@@ -14,8 +14,8 @@ export const PsychopyProjects = () => {
         setProjectWorking(true);
         
         try {
-            console.log(`http://localhost:${process.env.FASTAPI_PORT}/api/projects/${projectId}`);
-            const response = await fetch(`http://localhost:${process.env.FASTAPI_PORT}/api/projects/${projectId}`);
+            console.log(`http://localhost:8000/api/projects/${projectId}`);
+            const response = await fetch(`http://localhost:8000/api/projects/${projectId}`);
 
             if (!response.ok) {
                 throw new Error("Psychopy project not found");

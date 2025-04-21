@@ -8,7 +8,7 @@ export const projects: PsychopyProject[] = [
         description: "Longer description of the test project"
     },
     {
-        id: "psychopy-test-copy",
+        id: "test",
         name: "The second test project",
         shortDescription: "Test it again",
         description: ""
