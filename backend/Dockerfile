@@ -11,7 +11,6 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     libgtk-3-dev \
-    software-properties-common \
     libgl1-mesa-dev \
     libxkbcommon-x11-0 \
     libxcb-icccm4 \
@@ -41,7 +40,7 @@ ENV PATH=$VIRTUAL_ENV/bin:$PATH
 
 COPY requirements.txt .
 
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app
