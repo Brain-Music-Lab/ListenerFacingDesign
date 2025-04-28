@@ -3,7 +3,7 @@ group "default" {
 }
 
 target "_common" {
-    platforms = [ "linux/amd64", "linux/arm64"]
+    platforms = [ "linux/arm64" ]
 }
 
 target "frontend" {
