@@ -1,8 +1,12 @@
 'use client'
 
-import { PsychopyProjects } from "../../components/PsychopyProjects"
+import { useRouter } from "next/navigation"
+// import { PsychopyProjects } from "../../components/PsychopyProjects"
+import Button from 'react-bootstrap/Button';
 
 export default function dashboard() {
+    const router = useRouter();
+
     return (
         <div className="container d-flex justify-content-center">
             <div className="row">
@@ -13,7 +17,13 @@ export default function dashboard() {
                     </h3>
                 </div>
                 <div>
-                    <PsychopyProjects/>
+                    <Button 
+                        className="btn btn-primary"
+                        onClick={() => router.push('/memory-listening/')}
+                    >
+                        Memorable Music
+                    </Button>
+                    {/* <PsychopyProjects/> */}
                 </div>
             </div>
         </div>
