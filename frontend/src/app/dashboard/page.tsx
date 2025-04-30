@@ -1,29 +1,119 @@
 'use client'
 
 import { useRouter } from "next/navigation"
-// import { PsychopyProjects } from "../../components/PsychopyProjects"
+import { useState, useCallback, useRef, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
+import WebSocketListener from '../../components/WebSocketListener';
+import { useVideo } from '../../contexts/VideoContext';
 
-export default function dashboard() {
+// Grid positions for navigation
+const GRID = [
+    [0, 1, 2]  // top row
+];
+
+export default function Dashboard() {
     const router = useRouter();
+    const { resetSession } = useVideo();
+    const [currentPosition, setCurrentPosition] = useState<[number, number]>([0, 0]); // [row, col]
+    const buttonRefs = useRef<(HTMLButtonElement | null)[]>(Array(6).fill(null));
+
+    // Reset session when dashboard mounts
+    useEffect(() => {
+        resetSession();
+    }, [resetSession]);
+
+    const setButtonRef = useCallback((index: number) => (el: HTMLButtonElement | null) => {
+        buttonRefs.current[index] = el;
+    }, []);
+
+    // Find current index in flat array from grid position
+    const getCurrentIndex = useCallback(() => {
+        return GRID[currentPosition[0]][currentPosition[1]];
+    }, [currentPosition]);
+
+    // Update focus when position changes
+    useEffect(() => {
+        const index = GRID[currentPosition[0]][currentPosition[1]];
+        const currentButton = buttonRefs.current[index];
+        if (currentButton) {
+            currentButton.focus();
+        }
+    }, [currentPosition]); // Removed getCurrentIndex from dependencies
+
+    const handleDirection = useCallback((direction: string) => {
+        console.log("Received direction:", direction);
+        setCurrentPosition(([row, col]) => {
+            let newRow = row;
+            let newCol = col;
+
+            switch (direction) {
+                case 'left':
+                    if (col > 0) newCol = col - 1;
+                    break;
+                case 'right':
+                    if (col < GRID[row].length - 1) newCol = col + 1;
+                    break;
+                case 'green':
+                    // Handle button click
+                    const currentButton = buttonRefs.current[GRID[row][col]];
+                    currentButton?.click();
+                    break;
+            }
+
+            return [newRow, newCol];
+        });
+    }, []);
+
+    const buttonStyle = useCallback((index: number) => ({
+        width: '200px',
+        height: '100px',
+        outlineOffset: '3px',
+        transition: 'all 0.2s ease-in-out',
+        outline: getCurrentIndex() === index ? '3px solid #007bff' : 'none',
+        transform: getCurrentIndex() === index ? 'scale(1.05)' : 'scale(1)'
+    }), [getCurrentIndex]);
 
     return (
-        <div className="container d-flex justify-content-center">
+        <div className="container">
+            <WebSocketListener onMessage={handleDirection} />
             <div className="row">
                 <div className="col-12">
-                    <h1 className="m-4 text-center">Brain Music Lab Study Dashboard</h1>
+                    <h1 className="m-4 text-center">Brain Music Lab Dashboard</h1>
                     <h3 className="text-center m-5">
-                        Click on a study below to get started!
+                        Navigate between selections with the joystick, and press the green button to select one!
                     </h3>
                 </div>
-                <div>
+            </div>
+            <div className="row row-cols-2 row-cols-md-3 g-4 justify-content-center">
+                <div className="col d-flex justify-content-center">
                     <Button 
+                        ref={setButtonRef(0)}
                         className="btn btn-primary"
                         onClick={() => router.push('/memory-listening/')}
+                        style={buttonStyle(0)}
                     >
                         Memorable Music
                     </Button>
-                    {/* <PsychopyProjects/> */}
+                </div>
+                <div className="col d-flex justify-content-center">
+                    <Button 
+                        ref={setButtonRef(1)}
+                        className="btn btn-primary"
+                        onClick={() => {}}
+                        style={buttonStyle(1)}
+                    >
+                        About this Device
+                    </Button>
+                </div>
+                <div className="col d-flex justify-content-center">
+                    <Button 
+                        ref={setButtonRef(2)}
+                        className="btn btn-primary"
+                        onClick={() => {}}
+                        style={buttonStyle(2)}
+                    >
+                        About the Lab
+                    </Button>
                 </div>
             </div>
         </div>

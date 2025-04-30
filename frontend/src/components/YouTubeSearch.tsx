@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, RefObject } from 'react';
 import { useRouter } from 'next/navigation';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -10,7 +10,13 @@ import Alert from 'react-bootstrap/Alert';
 import { searchYouTubeVideos, YouTubeSearchResult } from '../lib/youtube';
 import { useVideo } from '../contexts/VideoContext';
 
-export default function YouTubeSearch() {
+interface YouTubeSearchProps {
+    searchRef?: RefObject<HTMLInputElement | null>;
+    videoRefs?: RefObject<HTMLDivElement[]>;
+    selectedVideoIndex?: number;
+}
+
+export default function YouTubeSearch({ searchRef, videoRefs, selectedVideoIndex = -1 }: YouTubeSearchProps) {
     const router = useRouter();
     const { setSelectedVideo } = useVideo();
     const [searchQuery, setSearchQuery] = useState('');
@@ -26,6 +32,9 @@ export default function YouTubeSearch() {
         try {
             const results = await searchYouTubeVideos(searchQuery);
             setSearchResults(results);
+            if (videoRefs?.current) {
+                videoRefs.current = [];
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred while searching');
             setSearchResults([]);
@@ -39,11 +48,19 @@ export default function YouTubeSearch() {
         router.push('/memory-listening/song-play');
     };
 
+    const getVideoStyle = (index: number) => ({
+        outlineOffset: '3px',
+        transition: 'all 0.2s ease-in-out',
+        outline: selectedVideoIndex === index ? '3px solid #007bff' : 'none',
+        transform: selectedVideoIndex === index ? 'scale(1.05)' : 'scale(1)'
+    });
+
     return (
         <div className="youtube-search-container">
             <Form onSubmit={handleSearch} className="mb-4">
                 <InputGroup>
                     <Form.Control
+                        ref={searchRef}
                         type="text"
                         placeholder="Search for a song (e.g., 'Love Shack B52s')"
                         value={searchQuery}
@@ -64,20 +81,33 @@ export default function YouTubeSearch() {
             
             {searchResults.length > 0 && (
                 <div className="search-results mb-4">
-                    {searchResults.map((result) => (
-                        <Card key={result.id} className="mb-2" style={{ cursor: 'pointer' }} onClick={() => selectVideo(result)}>
-                            <Card.Body className="d-flex align-items-center">
-                                <img 
-                                    src={result.thumbnail} 
-                                    alt={result.title}
-                                    style={{ width: '120px', marginRight: '1rem' }}
-                                />
-                                <div>
-                                    <Card.Title>{result.title}</Card.Title>
-                                    <Card.Text>{result.channelTitle}</Card.Text>
-                                </div>
-                            </Card.Body>
-                        </Card>
+                    {searchResults.map((result, index) => (
+                        <div
+                            key={result.id}
+                            ref={el => {
+                                if (el && videoRefs?.current) {
+                                    videoRefs.current[index] = el;
+                                }
+                            }}
+                            onClick={() => selectVideo(result)}
+                        >
+                            <Card 
+                                className="mb-2" 
+                                style={{ cursor: 'pointer', ...getVideoStyle(index) }}
+                            >
+                                <Card.Body className="d-flex align-items-center">
+                                    <img 
+                                        src={result.thumbnail} 
+                                        alt={result.title}
+                                        style={{ width: '120px', marginRight: '1rem' }}
+                                    />
+                                    <div>
+                                        <Card.Title>{result.title}</Card.Title>
+                                        <Card.Text>{result.channelTitle}</Card.Text>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        </div>
                     ))}
                 </div>
             )}

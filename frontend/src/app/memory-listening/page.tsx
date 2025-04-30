@@ -2,18 +2,65 @@
 
 import { useRouter } from 'next/navigation';
 import Button from 'react-bootstrap/Button';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import WebSocketListener from '../../components/WebSocketListener';
 
-export default function MemoryListening () {
+export default function MemoryListening() {
     const router = useRouter();
+    const [selectedButton, setSelectedButton] = useState<number>(1); // 0 for back, 1 for song select
+    const buttonRefs = useRef<(HTMLButtonElement | null)[]>([null, null]);
+
+    const setButtonRef = useCallback((index: number) => (el: HTMLButtonElement | null) => {
+        buttonRefs.current[index] = el;
+    }, []);
+
+    const handleDirection = (direction: string) => {
+        if (direction === 'left' && selectedButton === 1) {
+            setSelectedButton(0);
+        } else if (direction === 'right' && selectedButton === 0) {
+            setSelectedButton(1);
+        }
+        else if (direction === 'green') {
+            buttonRefs.current[selectedButton]?.click();
+        }
+    };
+
+    useEffect(() => {
+        const currentButton = buttonRefs.current[selectedButton];
+        if (currentButton) {
+            currentButton.focus();
+        }
+    }, [selectedButton]);
+
+    const buttonStyle = (index: number) => ({
+        outlineOffset: '3px',
+        transition: 'all 0.2s ease-in-out',
+        outline: selectedButton === index ? '3px solid #007bff' : 'none',
+        transform: selectedButton === index ? 'scale(1.05)' : 'scale(1)',
+        margin: '0 10px'
+    });
 
     return (
-        <div className="container d-flex justify-content-center">
-            <Button 
-                className="btn btn-primary" 
-                onClick={() => router.push('/memory-listening/song-select')}
-            >
-                Go to Song Select
-            </Button>
+        <div className="container">
+            <WebSocketListener onMessage={handleDirection} />
+            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+                <Button 
+                    ref={setButtonRef(0)}
+                    className="btn btn-secondary" 
+                    onClick={() => router.push('/dashboard')}
+                    style={buttonStyle(0)}
+                >
+                    Back to Dashboard
+                </Button>
+                <Button 
+                    ref={setButtonRef(1)}
+                    className="btn btn-primary" 
+                    onClick={() => router.push('/memory-listening/song-select')}
+                    style={buttonStyle(1)}
+                >
+                    Go to Song Select
+                </Button>
+            </div>
         </div>
-    )
+    );
 }

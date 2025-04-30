@@ -31,75 +31,110 @@ export default function YouTubePlayer({
     onPlayerReady,
     onStateChange,
 }: YouTubePlayerProps) {
-    const playerContainerRef = useRef<HTMLDivElement>(null);
-    const playerInstanceRef = useRef<any>(null);
-    const currentVideoIdRef = useRef<string>(videoId);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const playerRef = useRef<any>(null);
     const elementId = 'youtube-player';
+    const isPlayerReady = useRef<boolean>(false);
 
-    // Function to initialize the player
-    const initPlayer = () => {
-        if (!window.YT || !playerContainerRef.current) return;
+    const createPlayer = () => {
+        if (!window.YT || !containerRef.current) return;
 
-        playerInstanceRef.current = new window.YT.Player(elementId, {
+        const origin = window.location.origin;
+        const hostname = window.location.hostname;
+
+        playerRef.current = new window.YT.Player(elementId, {
             videoId,
             playerVars: {
                 autoplay: 1,
                 controls: 0,
                 disablekb: 1,
                 enablejsapi: 1,
-                origin: window.location.origin,
-                widget_referrer: window.location.origin,
-                nocookie: 1,
-                rel: 0,
+                origin: origin,
+                host: hostname === 'localhost' ? 'https://www.youtube-nocookie.com' : undefined,
+                playsinline: 1,
                 modestbranding: 1,
                 fs: 0,
+                rel: 0,
+                showinfo: 0,
+                iv_load_policy: 3,
+                cc_load_policy: 0
             },
             events: {
                 onReady: (event) => {
-                    currentVideoIdRef.current = videoId;
+                    isPlayerReady.current = true;
+                    event.target.setVolume(100);
                     onPlayerReady?.(event.target);
                 },
-                onStateChange: (event) => onStateChange?.(event.data)
+                onStateChange: (event) => {
+                    if (onStateChange) {
+                        onStateChange(event.data);
+                    }
+                },
+                onError: (event) => {
+                    console.error('YouTube Player Error:', event.data);
+                }
             }
         });
     };
 
+    // Load YouTube API and initialize player
     useEffect(() => {
-        // Load the API if it hasn't been loaded yet
         if (!apiLoaded) {
             const tag = document.createElement('script');
-            tag.src = "https://www.youtube.com/iframe_api";
-            const firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+            tag.src = 'https://www.youtube.com/iframe_api';
+            tag.async = true;
+            const firstScript = document.getElementsByTagName('script')[0];
+            firstScript.parentNode?.insertBefore(tag, firstScript);
             apiLoaded = true;
 
-            // Set up the global callback
-            window.onYouTubeIframeAPIReady = () => {
-                initPlayer();
-            };
+            window.onYouTubeIframeAPIReady = createPlayer;
         } else if (window.YT) {
-            // If API is already loaded, initialize player directly
-            initPlayer();
+            createPlayer();
         }
 
         return () => {
-            if (playerInstanceRef.current) {
-                playerInstanceRef.current.destroy();
+            if (playerRef.current) {
+                try {
+                    isPlayerReady.current = false;
+                    playerRef.current.destroy();
+                } catch (e) {
+                    console.error('Error destroying YouTube player:', e);
+                }
             }
         };
-    }, []); // Only run once on mount
+    }, []);
 
-    // Handle video changes without recreating the player
+    // Handle video ID changes
     useEffect(() => {
-        if (playerInstanceRef.current && currentVideoIdRef.current !== videoId) {
-            playerInstanceRef.current.loadVideoById(videoId);
-            currentVideoIdRef.current = videoId;
-        }
+        const loadVideo = () => {
+            if (!playerRef.current || !isPlayerReady.current) return;
+            
+            try {
+                playerRef.current.loadVideoById({
+                    videoId,
+                    startSeconds: 0,
+                });
+            } catch (e) {
+                console.error('Error loading video:', e);
+            }
+        };
+
+        loadVideo();
     }, [videoId]);
 
     return (
-        <div ref={playerContainerRef}>
-            <div id={elementId} style={{ width: '1px', height: '1px', opacity: 0 }} />
+        <div 
+            ref={containerRef} 
+            aria-hidden="true"
+            style={{
+                width: 0,
+                height: 0,
+                overflow: 'hidden',
+                position: 'absolute',
+                pointerEvents: 'none'
+            }}
+        >
+            <div id={elementId} />
         </div>
     );
 }

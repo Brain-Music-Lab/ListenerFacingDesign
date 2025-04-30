@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import YouTubePlayer from '../../../components/YouTubePlayer';
+import WebSocketListener from '../../../components/WebSocketListener';
 
 const PlayerState = {
     PLAYING: 1,
@@ -15,10 +16,12 @@ const PlayerState = {
 
 export default function SongPlay() {
     const router = useRouter();
-    const { selectedVideo } = useVideo();
+    const { selectedVideo, sessionId } = useVideo();
     const [isPlaying, setIsPlaying] = useState(true);
     const [memoryText, setMemoryText] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
     const playerInstanceRef = useRef<any>(null);
+    const textInputRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
         if (!selectedVideo) {
@@ -55,10 +58,55 @@ export default function SongPlay() {
         setIsPlaying(false);
     };
 
-    const handleSubmit = () => {
-        // TODO: Add logic to save the memory text
-        console.log('Memory submitted:', memoryText);
-        setMemoryText(''); // Clear the input after submission
+    const handleSubmit = async () => {
+        if (!selectedVideo || !memoryText.trim() || isSaving) return;
+
+        try {
+            setIsSaving(true);
+            const response = await fetch('/api/memories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    sessionId,
+                    videoId: selectedVideo.id,
+                    videoTitle: selectedVideo.title,
+                    memoryText: memoryText.trim()
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save memory');
+            }
+
+            setMemoryText('');
+            // Optionally show success message or notification here
+        } catch (error) {
+            console.error('Error saving memory:', error);
+            // Optionally show error message to user here
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleInteraction = (message: string) => {
+        switch (message) {
+            case 'green':
+                handlePlayPause();
+                break;
+            case 'red':
+                handleStop();
+                break;
+            case 'yellow':
+                handleSubmit();
+                break;
+            case 'blue':
+                if (textInputRef.current) {
+                    textInputRef.current.focus();
+                }
+                break;
+        }
     };
 
     if (!selectedVideo) {
@@ -67,6 +115,7 @@ export default function SongPlay() {
 
     return (
         <div className="container">
+            <WebSocketListener onMessage={handleInteraction} />
             <div className="row mb-4">
                 <div className="col-12">
                     <h2 className="text-center mb-4">Now Playing: {selectedVideo.title}</h2>
@@ -95,17 +144,20 @@ export default function SongPlay() {
                     <div className="memory-input mb-4">
                         <InputGroup>
                             <Form.Control
+                                ref={textInputRef}
                                 as="textarea"
                                 placeholder="What memory does this song bring up for you?"
                                 value={memoryText}
                                 onChange={(e) => setMemoryText(e.target.value)}
                                 style={{ height: '100px' }}
+                                disabled={isSaving}
                             />
                             <Button 
                                 variant="primary"
                                 onClick={handleSubmit}
+                                disabled={isSaving || !memoryText.trim()}
                             >
-                                Submit
+                                {isSaving ? 'Saving...' : 'Submit'}
                             </Button>
                         </InputGroup>
                     </div>

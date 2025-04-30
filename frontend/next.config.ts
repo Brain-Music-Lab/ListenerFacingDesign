@@ -1,4 +1,4 @@
-import { NextConfig } from 'next';
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   async headers() {
@@ -15,18 +15,30 @@ const nextConfig: NextConfig = {
               style-src 'self' 'unsafe-inline';
               img-src 'self' https: data:;
               media-src 'self' https://www.youtube.com https://www.youtube-nocookie.com;
-              connect-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://www.googleapis.com;
+              connect-src 'self' ws://localhost:8765 wss://localhost:8765 https://www.googleapis.com https://*.youtube.com;
+              worker-src 'self' blob:;
+              child-src 'self' blob:;
+              form-action 'self';
+              base-uri 'self';
+              frame-ancestors 'none';
             `.replace(/\s+/g, ' ').trim()
           },
           {
+            key: 'X-Frame-Options',
+            value: 'DENY'
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff'
+          },
+          {
             key: 'Permissions-Policy',
-            value: 'autoplay=self'
+            value: 'autoplay=self, fullscreen=self'
           }
         ]
       }
     ];
-  },
-  reactStrictMode: true,
+  }
 }
 
-export default nextConfig;
+export default nextConfig
