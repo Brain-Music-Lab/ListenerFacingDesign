@@ -28,7 +28,7 @@ async def broadcast_message(message):
 
 async def handle_input(joystick, buttons):
     """Handle console input and broadcast to all clients."""
-    print("Enter direction (up/down/left/right), color (green/red/blue/yellow) or 'q' to quit:")
+    print("Reading commands")
     while True:
         # Detect joystick input
         joystick, stick_out = process_joystick_input(joystick)
