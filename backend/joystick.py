@@ -2,32 +2,48 @@ from RPi import GPIO  # For Pi 5 (install rpi-lgpio first)
 import time  # MUST keep this import
 
 
-joystick_pins = {
+joystick = {
     "up": 17,
     "down": 4,
     "left": 22,
     "right": 27
 }
 
-button_press_pins = {
-    "green": 23
+buttons = {
+    "blue": {
+        "press": 23,
+        "light": 24,
+        "on": False
+    },
+    "yell0w": {
+        "press": 25,
+        "light": 9,
+        "on": False
+    },
+    "red": {
+        "press": 8,
+        "light": 11,
+        "on": False
+    },
+    "green": {
+        "press": 6,
+        "light": 12,
+        "on": False
+    },
 }
-
-button_light_pins = {
-    "green": 24
-}
-
-green_on = False
 
 GPIO.setmode(GPIO.BCM)
-for pin in joystick_pins.values():
+for pin in joystick.values():
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-for pin in button_press_pins.values():
-    GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+for attribute in buttons.values():
+    # Get pins
+    press_pin = attribute["press"]
+    light_pin = attribute["light"]
 
-for pin in button_light_pins.values():
-    GPIO.setup(pin, GPIO.OUT)
+    # Set pins
+    GPIO.setup(press_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(light_pin, GPIO.OUT)
 
 last_trigger_time = {dir: 0 for dir in joystick_pins}
 debounce_delay = 0.5
@@ -43,16 +59,15 @@ try:
         #         if current_time - last_trigger_time[direction] > debounce_delay:
         #             print(f"{direction} pressed")
         #             last_trigger_time[direction] = current_time
-
         # For buttons
-        for buttons, lights in zip(button_press_pins.items(),
-                                   button_light_pins.items()):
-            if GPIO.input(buttons[1]) == GPIO.LOW and not green_on:
-                GPIO.output(lights[1], GPIO.HIGH)
-                green_on = True
-            elif GPIO.input(buttons[1]) == GPIO.HIGH and green_on:
-                GPIO.output(lights[1], GPIO.LOW)
-                green_on = False
+        for button in buttons.values():
+
+            if GPIO.input(button["press"]) == GPIO.LOW and not button["on"]:
+                GPIO.output(button["light"], GPIO.HIGH)
+                button["on"] = False
+            elif GPIO.input(button["press"]) == GPIO.HIGH and button["on"]:
+                GPIO.output(button["light"], GPIO.LOW)
+                button["off"] = True
                 # print(f"{direction} pressed")
                 # last_trigger_time[direction] = current_time
         time.sleep(0.01)
