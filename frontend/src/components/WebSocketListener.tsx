@@ -16,7 +16,7 @@ export default function WebSocketListener({ onMessage }: WebSocketListenerProps)
     }, [onMessage]);
 
     useEffect(() => {
-        ws.current = new WebSocket("ws://localhost:8765");
+        ws.current = new WebSocket("ws://bml-pi1:8765");
         
         ws.current.onopen = () => console.log("Web socket opened");
         ws.current.onmessage = (event) => {
