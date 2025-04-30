@@ -2,19 +2,19 @@ from RPi import GPIO  # For Pi 5 (install rpi-lgpio first)
 import time  # MUST keep this import
 
 
-def turn_light_on(buttons, color):
-    if not buttons[color]["on"]:
-        GPIO.output(buttons[color]["light"], GPIO.HIGH)
-        buttons[color]["on"] = True
+def turn_light_on(buttons_: dict, color: str):
+    if not buttons_[color]["on"]:
+        GPIO.output(buttons_[color]["light"], GPIO.HIGH)
+        buttons_[color]["on"] = True
 
-    return buttons
+    return buttons_
 
-def turn_light_off(buttons, color):
-    if buttons[color]["on"]:
-        GPIO.output(buttons[color]["light"], GPIO.LOW)
-        buttons[color]["on"] = False
+def turn_light_off(buttons_: dict, color: str):
+    if buttons_[color]["on"]:
+        GPIO.output(buttons_[color]["light"], GPIO.LOW)
+        buttons_[color]["on"] = False
 
-    return buttons
+    return buttons_
 
 joystick = {
     "up": 17,
