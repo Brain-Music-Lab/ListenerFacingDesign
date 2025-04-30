@@ -2,6 +2,20 @@ from RPi import GPIO  # For Pi 5 (install rpi-lgpio first)
 import time  # MUST keep this import
 
 
+def turn_light_on(buttons, color):
+    if not buttons[color]["on"]:
+        GPIO.output(buttons[color]["light"], GPIO.HIGH)
+        buttons[color]["on"] = True
+
+    return buttons
+
+def turn_light_off(buttons, color):
+    if buttons[color]["on"]:
+        GPIO.output(buttons[color]["light"], GPIO.LOW)
+        buttons[color]["on"] = False
+
+    return buttons
+
 joystick = {
     "up": 17,
     "down": 4,
@@ -64,13 +78,11 @@ try:
 
             # Turn the light on
             if GPIO.input(button["press"]) == GPIO.LOW and not button["on"]:
-                GPIO.output(button["light"], GPIO.HIGH)
-                button["on"] = True
+                buttons = turn_light_on(buttons, button)
 
             # Turn the light off
             elif GPIO.input(button["press"]) == GPIO.HIGH and button["on"]:
-                GPIO.output(button["light"], GPIO.LOW)
-                button["on"] = False
+                buttons = turn_light_off(buttons, button)
                 # print(f"{direction} pressed")
                 # last_trigger_time[direction] = current_time
         time.sleep(0.01)
