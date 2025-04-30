@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
               style-src 'self' 'unsafe-inline';
               img-src 'self' https: data:;
               media-src 'self' https://www.youtube.com https://www.youtube-nocookie.com;
-              connect-src 'self' ws://10.201.3.153:8765 wss://10.201.3.153:8765 ws://localhost:8765 wss://localhost:8765 https://www.googleapis.com https://*.youtube.com;
+              connect-src 'self' ws://localhost:8765 wss://localhost:8765 https://www.googleapis.com https://*.youtube.com;
               worker-src 'self' blob:;
               child-src 'self' blob:;
               form-action 'self';

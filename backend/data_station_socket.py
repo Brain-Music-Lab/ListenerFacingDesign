@@ -28,7 +28,7 @@ async def broadcast_message(message):
 
 async def handle_input(joystick, buttons):
     """Handle console input and broadcast to all clients."""
-    print("Reading commands")
+    print("Reading")
     while True:
         # Detect joystick input
         joystick, stick_out = process_joystick_input(joystick)
@@ -67,8 +67,8 @@ async def handle_client(websocket):
 async def main():
     """Main server function that starts both the WebSocket server and input handler."""
 
-    server = await websockets.serve(handle_client, "bml-pi1", 8765)
-    print("WebSocket server started on ws://10.201.3.153:8765")
+    server = await websockets.serve(handle_client, "localhost", 8765)
+    print("WebSocket server started on ws://localhost:8765")
     
     joystick, buttons = initialize_hardware()
     # Create tasks for handling input and the server
