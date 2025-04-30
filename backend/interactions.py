@@ -119,13 +119,13 @@ def initialize_hardware():
     }
 
     GPIO.setmode(GPIO.BCM)
-    for pin in joystick.values():
-        GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    for direction in joystick.values():
+        GPIO.setup(direction["pin"], GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-    for attribute in buttons.values():
+    for color in buttons.values():
         # Get pins
-        press_pin = attribute["press"]
-        light_pin = attribute["light"]
+        press_pin = color["press"]["pin"]
+        light_pin = color["light"]["pin"]
 
         # Set pins
         GPIO.setup(press_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
