@@ -45,8 +45,8 @@ for attribute in buttons.values():
     GPIO.setup(press_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(light_pin, GPIO.OUT)
 
-last_trigger_time = {dir: 0 for dir in joystick_pins}
-debounce_delay = 0.5
+# last_trigger_time = {dir: 0 for dir in joystick_pins}
+# debounce_delay = 0.5
 
 try:
     print("Reading controls...")
