@@ -68,7 +68,7 @@ async def main():
     """Main server function that starts both the WebSocket server and input handler."""
 
     server = await websockets.serve(handle_client, "bml-pi1", 8765)
-    print("WebSocket server started on ws://localhost:8765")
+    print("WebSocket server started on ws://10.201.3.153:8765")
     
     joystick, buttons = initialize_hardware()
     # Create tasks for handling input and the server
