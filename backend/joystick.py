@@ -62,12 +62,15 @@ try:
         # For buttons
         for button in buttons.values():
 
+            # Turn the light on
             if GPIO.input(button["press"]) == GPIO.LOW and not button["on"]:
                 GPIO.output(button["light"], GPIO.HIGH)
-                button["on"] = False
+                button["on"] = True
+
+            # Turn the light off
             elif GPIO.input(button["press"]) == GPIO.HIGH and button["on"]:
                 GPIO.output(button["light"], GPIO.LOW)
-                button["off"] = True
+                button["on"] = False
                 # print(f"{direction} pressed")
                 # last_trigger_time[direction] = current_time
         time.sleep(0.01)
