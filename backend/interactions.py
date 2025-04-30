@@ -2,50 +2,119 @@ from RPi import GPIO  # For Pi 5 (install rpi-lgpio first)
 import time  # MUST keep this import
 
 
+def process_joystick_input(joystick: dict) -> tuple[dict, dict | None]:
+    for direction in joystick.keys():
+        pin = joystick[direction]["pin"]
+        pressed = joystick[direction]["state"]
+
+        # Check if pressed. We return true if it was pressed this frame
+        if GPIO.input(pin) == GPIO.LOW and not pressed:
+            joystick[direction]["state"] = True
+            return joystick, {direction: True}
+        
+        # Check if returned for state management. We do not notify of release
+        elif GPIO.input(pin) == GPIO.HIGH and pressed:
+            joystick[direction]["state"] = False
+    
+    return joystick, None
+
+
+def process_button_input(buttons: dict) -> tuple[dict, dict | None]:
+    for color in buttons.keys():
+        # Get pin and pressed state
+        pin = buttons[color]["press"]["pin"]
+        pressed = buttons[color]["press"]["state"]
+        
+        # If pressed this frame
+        if GPIO.input(pin) == GPIO.LOW and not pressed:
+            buttons[color]["press"]["state"] = True
+            return buttons, {color: True}
+        
+        # If released this frame
+        if GPIO.input(pin) == GPIO.HIGH and pressed:
+            buttons[color]["press"]["state"] = False
+            return buttons, {color: False}
+        
+    # Return none if no activity
+    return buttons, None
+
+
 def turn_light_on(buttons_: dict, color: str):
-    if not buttons_[color]["on"]:
-        GPIO.output(buttons_[color]["light"], GPIO.HIGH)
-        buttons_[color]["on"] = True
+    if not buttons_[color]["light"]["state"]:
+        GPIO.output(buttons_[color]["light"]["pin"], GPIO.HIGH)
+        buttons_[color]["light"]["state"] = True
 
     return buttons_
 
 
 def turn_light_off(buttons_: dict, color: str):
-    if buttons_[color]["on"]:
-        GPIO.output(buttons_[color]["light"], GPIO.LOW)
-        buttons_[color]["on"] = False
+    if buttons_[color]["light"]["state"]:
+        GPIO.output(buttons_[color]["light"]["pin"], GPIO.LOW)
+        buttons_[color]["light"]["state"] = False
 
     return buttons_
 
 
 def initialize_hardware():
     joystick = {
-        "up": 17,
-        "down": 4,
-        "left": 22,
-        "right": 27
+        "up": {
+            "state": False,
+            "pin": 17
+        },
+        "down": {
+            "state": False,
+            "pin": 4
+        },
+        "left": {
+            "state": False,
+            "pin": 22
+        },
+        "right": {
+            "state": False,
+            "pin": 27
+        }
     }
 
     buttons = {
         "blue": {
-            "press": 23,
-            "light": 24,
-            "on": False
+            "press": {
+                "state": False,
+                "pin": 23,
+            },
+            "light": {
+                "state": False,
+                "pin": 24
+            },
         },
-        "yell0w": {
-            "press": 25,
-            "light": 9,
-            "on": False
+        "yellow": {
+            "press": {
+                "state": False,
+                "pin": 25,
+            },
+            "light": {
+                "state": False,
+                "pin": 9
+            },
         },
         "red": {
-            "press": 8,
-            "light": 11,
-            "on": False
+            "press": {
+                "state": False,
+                "pin": 8,
+            },
+            "light": {
+                "state": False,
+                "pin": 11
+            },
         },
         "green": {
-            "press": 6,
-            "light": 12,
-            "on": False
+            "press": {
+                "state": False,
+                "pin": 6,
+            },
+            "light": {
+                "state": False,
+                "pin": 12
+            },
         },
     }
 

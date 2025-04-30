@@ -1,7 +1,13 @@
 import asyncio
 import websockets
-import aioconsole
 import sys
+import json
+from interactions import \
+                        initialize_hardware, \
+                        turn_light_off, \
+                        turn_light_on, \
+                        process_button_input, \
+                        process_joystick_input
 
 # Keep track of connected clients
 connected_clients = set()
@@ -20,17 +26,27 @@ async def broadcast_message(message):
         connected_clients.remove(client)
         print(f"Client disconnected. Remaining clients: {len(connected_clients)}")
 
-async def handle_input():
+async def handle_input(joystick, buttons):
     """Handle console input and broadcast to all clients."""
     print("Enter direction (up/down/left/right), color (green/red/blue/yellow) or 'q' to quit:")
     while True:
-        message = await aioconsole.ainput()
-        if message.lower() in ['up', 'down', 'left', 'right', 'green', 'red', 'blue', 'yellow']:
-            await broadcast_message(message.lower())
-        elif message.lower() == 'q':
-            break
-        else:
-            print("Invalid input. Please enter up, down, left, right, color (green/red/blue/yellow), or q to quit")
+        # Detect joystick input
+        joystick, stick_out = process_joystick_input(joystick)
+        if stick_out:
+            await broadcast_message(json.dumps(stick_out))
+
+        # Detect button input
+        buttons, button_out = process_button_input(buttons)
+        if button_out:
+            await broadcast_message(json.dumps(button_out))
+
+        # message = await aioconsole.ainput()
+        # if message.lower() in ['up', 'down', 'left', 'right', 'green', 'red', 'blue', 'yellow']:
+        #     await broadcast_message(message.lower())
+        # elif message.lower() == 'q':
+        #     break
+        # else:
+        #     print("Invalid input. Please enter up, down, left, right, color (green/red/blue/yellow), or q to quit")
 
 async def handle_client(websocket):
     """Handle individual client connections."""
@@ -50,11 +66,13 @@ async def handle_client(websocket):
 
 async def main():
     """Main server function that starts both the WebSocket server and input handler."""
+
     server = await websockets.serve(handle_client, "localhost", 8765)
     print("WebSocket server started on ws://localhost:8765")
     
+    joystick, buttons = initialize_hardware()
     # Create tasks for handling input and the server
-    input_task = asyncio.create_task(handle_input())
+    input_task = asyncio.create_task(handle_input(joystick, buttons))
     server_task = asyncio.create_task(server.serve_forever())
     
     try:

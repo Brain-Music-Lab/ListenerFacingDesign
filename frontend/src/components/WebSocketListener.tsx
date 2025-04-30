@@ -20,9 +20,11 @@ export default function WebSocketListener({ onMessage }: WebSocketListenerProps)
         
         ws.current.onopen = () => console.log("Web socket opened");
         ws.current.onmessage = (event) => {
-            if (onMessageRef.current) {
-                onMessageRef.current(event.data);
-            }
+            console.log(event)
+            // leave this commented out
+            // if (onMessageRef.current) {
+            //     onMessageRef.current(event.data);
+            // }
         };
         ws.current.onclose = () => console.log("Web socket closed");
 
