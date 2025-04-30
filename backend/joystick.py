@@ -47,11 +47,11 @@ try:
         # For buttons
         for buttons, lights in zip(button_press_pins.items(),
                                    button_light_pins.items()):
-            if GPIO.input(buttons[1]) == GPIO.LOW and not green_on:
-                GPIO.output(lights[1], GPIO.LOW)
-                green_on = True
-            elif GPIO.input(buttons[1]) == GPIO.HIGH and green_on:
+            if GPIO.input(buttons[1]) == GPIO.HIGH and not green_on:
                 GPIO.output(lights[1], GPIO.HIGH)
+                green_on = True
+            elif GPIO.input(buttons[1]) == GPIO.LOW and green_on:
+                GPIO.output(lights[1], GPIO.LOW)
                 green_on = False
                 # print(f"{direction} pressed")
                 # last_trigger_time[direction] = current_time
