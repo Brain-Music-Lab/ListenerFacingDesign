@@ -18,11 +18,6 @@ export default function MemoryListening() {
 
         if (!state) return;
 
-        if (instruction === 'left' && selectedButton === 1) {
-            setSelectedButton(0);
-        } else if (instruction === 'right' && selectedButton === 0) {
-            setSelectedButton(1);
-        }
         else if (instruction === 'green') {
             buttonRefs.current[1]?.click();
         }
@@ -40,9 +35,9 @@ export default function MemoryListening() {
 
     const buttonStyle = (index: number) => ({
         outlineOffset: '3px',
-        transition: 'all 0.2s ease-in-out',
-        outline: selectedButton === index ? '3px solid #007bff' : 'none',
-        transform: selectedButton === index ? 'scale(1.05)' : 'scale(1)',
+        // transition: 'all 0.2s ease-in-out',
+        // outline: selectedButton === index ? '3px solid #007bff' : 'none',
+        // transform: selectedButton === index ? 'scale(1.05)' : 'scale(1)',
         margin: '0 10px'
     });
 
