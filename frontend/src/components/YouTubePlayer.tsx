@@ -62,6 +62,9 @@ export default function YouTubePlayer({
           // Set default volume
           event.target.setVolume(100);
           
+          // Explicitly start playing the video
+          event.target.playVideo();
+          
           // Call the onPlayerReady callback if provided
           if (onPlayerReady) {
             onPlayerReady(event.target);
@@ -216,7 +219,20 @@ export default function YouTubePlayer({
       <style jsx>{`
         .youtube-player-wrapper {
           position: relative;
+          width: 100%;
           height: 100%;
+        }
+        #${playerElementId} {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+        #${playerElementId} iframe {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
         }
         .player-error-overlay {
           position: absolute;

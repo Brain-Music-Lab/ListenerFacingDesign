@@ -40,7 +40,10 @@ export default function SongPlay() {
   const handlePlayerReady = (player: YT.Player) => {
     console.log("Player ready, storing reference");
     playerRef.current = player;
-    setIsPlaying(true); // Assuming video starts playing when player is ready
+    
+    // Ensure video starts playing when player is ready
+    player.playVideo();
+    setIsPlaying(true);
   };
 
   // Handle player state changes
@@ -208,9 +211,10 @@ export default function SongPlay() {
         </div>
       </div>
 
+      {/* Video player - moved to be smaller and under the back button */}
       <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6">
-          <div className="ratio ratio-16x9">
+        <div className="col-12 col-md-6 col-lg-4">
+          <div className="youtube-player-container" style={{ width: '100%', height: '360px' }}>
             <YouTubePlayer
               videoId={selectedVideo.id}
               onPlayerReady={handlePlayerReady}
@@ -219,6 +223,12 @@ export default function SongPlay() {
           </div>
         </div>
       </div>
+      <style jsx>{`
+        .youtube-player-container {
+          position: relative;
+          overflow: hidden;
+        }
+      `}</style>
     </div>
   );
 }
