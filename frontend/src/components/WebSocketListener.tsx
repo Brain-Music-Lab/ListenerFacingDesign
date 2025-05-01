@@ -16,26 +16,44 @@ export default function WebSocketListener({ onMessage }: WebSocketListenerProps)
     }, [onMessage]);
 
     useEffect(() => {
-        // Only create a new WebSocket if we don't already have one
-        if (!ws.current || ws.current.readyState === WebSocket.CLOSED) {
-            console.log("Creating new WebSocket connection...");
-            ws.current = new WebSocket("ws://localhost:8765");
-            
-            ws.current.onopen = () => console.log("Web socket opened");
-            ws.current.onmessage = (event) => {
-                console.log(event)
+        if (ws.current?.readyState === WebSocket.OPEN) {
+            return; // Connection already exists and is open
+        }
+
+        console.log("Creating new WebSocket connection...");
+        ws.current = new WebSocket("ws://localhost:8765");
+        
+        ws.current.onopen = () => {
+            console.log("Web socket opened");
+            // Send a test message to confirm two-way communication
+            ws.current?.send(JSON.stringify({ type: "ping" }));
+        };
+
+        ws.current.onmessage = (event) => {
+            console.log("Received:", event.data);
+            try {
+                const data = JSON.parse(event.data);
+                if (data.status === "connected") {
+                    console.log("Connection confirmed by server");
+                }
                 if (onMessageRef.current) {
                     onMessageRef.current(event.data);
                 }
-            };
-            ws.current.onclose = () => console.log("Web socket closed");
-            ws.current.onerror = (error) => console.error("WebSocket error:", error);
-        }
+            } catch (e) {
+                console.log("Raw message:", event.data);
+                if (onMessageRef.current) {
+                    onMessageRef.current(event.data);
+                }
+            }
+        };
 
+        ws.current.onclose = () => console.log("Web socket closed");
+        ws.current.onerror = (error) => console.error("WebSocket error:", error);
+
+        const wsCurrent = ws.current;
         return () => {
-            // Only close if we're actually connected
-            if (ws.current && ws.current.readyState === WebSocket.OPEN) {
-                ws.current.close();
+            if (wsCurrent && wsCurrent.readyState === WebSocket.OPEN) {
+                wsCurrent.close();
             }
         }
     }, []); // Empty dependency array since we use refs

@@ -40,23 +40,24 @@ async def handle_input(joystick, buttons):
         if button_out:
             await broadcast_message(json.dumps(button_out))
 
-        # message = await aioconsole.ainput()
-        # if message.lower() in ['up', 'down', 'left', 'right', 'green', 'red', 'blue', 'yellow']:
-        #     await broadcast_message(message.lower())
-        # elif message.lower() == 'q':
-        #     break
-        # else:
-        #     print("Invalid input. Please enter up, down, left, right, color (green/red/blue/yellow), or q to quit")
-
 async def handle_client(websocket):
     """Handle individual client connections."""
     try:
         connected_clients.add(websocket)
         print(f"Client connected. Total clients: {len(connected_clients)}")
         
-        # Keep the connection alive until it's closed
-        await websocket.wait_closed()
+        # Send initial connection confirmation
+        await websocket.send(json.dumps({"status": "connected"}))
         
+        # Keep connection alive and handle messages
+        async for message in websocket:
+            try:
+                # Echo back any received messages to confirm connection is alive
+                await websocket.send(message)
+            except Exception as e:
+                print(f"Error handling message: {e}")
+                break
+                
     except websockets.exceptions.ConnectionClosed:
         print(f"Client disconnected. Remaining clients: {len(connected_clients) - 1}")
     finally:
@@ -66,8 +67,13 @@ async def handle_client(websocket):
 
 async def main():
     """Main server function that starts both the WebSocket server and input handler."""
-
-    server = await websockets.serve(handle_client, "localhost", 8765)
+    server = await websockets.serve(
+        handle_client, 
+        "localhost", 
+        8765,
+        ping_interval=20,  # Send ping every 20 seconds
+        ping_timeout=60    # Wait 60 seconds for pong response
+    )
     print("WebSocket server started on ws://localhost:8765")
     
     joystick, buttons = initialize_hardware()
