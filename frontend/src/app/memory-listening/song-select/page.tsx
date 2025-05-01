@@ -52,6 +52,8 @@ export default function SongSelect() {
 
         if (!state) return;
 
+        console.log("instruction")
+
         if (instruction === 'yellow') {
             // Trigger search button click
             const searchButton = document.querySelector('button[type="submit"]') as HTMLButtonElement;
