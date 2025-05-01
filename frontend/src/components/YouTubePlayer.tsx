@@ -125,13 +125,14 @@ export default function YouTubePlayer({
     return (
         <div 
             ref={containerRef} 
-            aria-hidden="true"
             style={{
-                width: 0,
-                height: 0,
-                overflow: 'hidden',
-                position: 'absolute',
-                pointerEvents: 'none'
+                width: '160px',
+                height: '90px',
+                position: 'fixed',
+                bottom: '20px',
+                right: '20px',
+                zIndex: 1000,
+                background: '#000'
             }}
         >
             <div id={elementId} />
