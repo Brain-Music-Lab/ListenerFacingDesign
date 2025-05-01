@@ -33,14 +33,6 @@ export default function MemoryListening() {
         }
     }, [selectedButton]);
 
-    const buttonStyle = (index: number) => ({
-        outlineOffset: '3px',
-        // transition: 'all 0.2s ease-in-out',
-        // outline: selectedButton === index ? '3px solid #007bff' : 'none',
-        // transform: selectedButton === index ? 'scale(1.05)' : 'scale(1)',
-        margin: '0 10px'
-    });
-
     return (
         <div className="container">
             <WebSocketListener onMessage={handleInteraction} />
@@ -51,7 +43,6 @@ export default function MemoryListening() {
                         ref={setButtonRef(0)}
                         className="red-interact" 
                         onClick={() => router.push('/dashboard')}
-                        style={buttonStyle(0)}
                     >
                         Back to Dashboard
                     </button>
@@ -61,7 +52,6 @@ export default function MemoryListening() {
                         ref={setButtonRef(1)}
                         className="green-interact" 
                         onClick={() => router.push('/memory-listening/song-select')}
-                        style={buttonStyle(1)}
                     >
                         Go to Song Select
                     </button>
