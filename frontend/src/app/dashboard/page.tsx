@@ -41,7 +41,6 @@ export default function Dashboard() {
     }, [currentPosition]); // Removed getCurrentIndex from dependencies
 
     const handleInteraction = useCallback((message: { [key: string]: boolean }) => {
-        console.log("got something");
         const [[instruction, state]] = Object.entries(message);
         
         // Only process the instruction if its state is true

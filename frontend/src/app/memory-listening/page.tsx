@@ -14,13 +14,17 @@ export default function MemoryListening() {
         buttonRefs.current[index] = el;
     }, []);
 
-    const handleDirection = (direction: string) => {
-        if (direction === 'left' && selectedButton === 1) {
+    const handleInteraction = (message: {[key: string]: boolean}) => {
+        const [[instruction, state]] = Object.entries(message);
+
+        if (!state) return;
+
+        if (instruction === 'left' && selectedButton === 1) {
             setSelectedButton(0);
-        } else if (direction === 'right' && selectedButton === 0) {
+        } else if (instruction === 'right' && selectedButton === 0) {
             setSelectedButton(1);
         }
-        else if (direction === 'green') {
+        else if (instruction === 'green') {
             buttonRefs.current[selectedButton]?.click();
         }
     };
@@ -42,7 +46,7 @@ export default function MemoryListening() {
 
     return (
         <div className="container">
-            <WebSocketListener onMessage={handleDirection} />
+            <WebSocketListener onMessage={handleInteraction} />
             <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
                 <Button 
                     ref={setButtonRef(0)}
