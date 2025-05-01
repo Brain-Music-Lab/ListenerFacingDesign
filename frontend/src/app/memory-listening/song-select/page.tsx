@@ -66,9 +66,32 @@ export default function SongSelect() {
             // Trigger click on selected video
             const selectedVideo = searchResultsRef.current[selectedVideoIndex];
             if (selectedVideo) {
-                console.log("click");
-                console.log(selectedVideo);
-                selectedVideo.click();
+                console.log("Trying to click video element:", selectedVideoIndex);
+                // Try multiple approaches to ensure the click event fires
+                try {
+                    // Method 1: Direct click
+                    selectedVideo.click();
+                    
+                    // Method 2: Create and dispatch a MouseEvent
+                    setTimeout(() => {
+                        if (selectedVideo) {
+                            const clickEvent = new MouseEvent('click', {
+                                view: window,
+                                bubbles: true,
+                                cancelable: true
+                            });
+                            selectedVideo.dispatchEvent(clickEvent);
+                        }
+                    }, 0);
+                    
+                    // Method 3: Find and click the card element
+                    const card = selectedVideo.querySelector('.card') || selectedVideo.firstElementChild;
+                    if (card) {
+                        (card as HTMLElement).click();
+                    }
+                } catch (e) {
+                    console.error("Error clicking element:", e);
+                }
             }
         } else if (instruction === 'up' && selectedVideoIndex > 0) {
             setSelectedVideoIndex(prev => prev - 1);
