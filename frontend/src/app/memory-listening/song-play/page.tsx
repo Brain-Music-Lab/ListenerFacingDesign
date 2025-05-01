@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useVideo } from '../../../contexts/VideoContext';
 import { useEffect, useState, useRef } from 'react';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import YouTubePlayer from '../../../components/YouTubePlayer';
@@ -28,6 +27,10 @@ export default function SongPlay() {
   const [isSaving, setIsSaving] = useState(false);
   const playerRef = useRef<YT.Player | null>(null);
   const textInputRef = useRef<HTMLTextAreaElement>(null);
+
+  // Add a ref for tracking button press time
+  const redButtonPressTimeRef = useRef<number | null>(null);
+  const redButtonTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Redirect if no video is selected
@@ -105,16 +108,54 @@ export default function SongPlay() {
   // Handle interactions from controller
   const handleInteraction = (message: { [key: string]: boolean }) => {
     const [[instruction, state]] = Object.entries(message);
+    
+    // Special handling for red button
+    if (instruction === 'red') {
+      if (state) {
+        // Button pressed down - start tracking time
+        redButtonPressTimeRef.current = Date.now();
+        
+        // Set a timer for 2 seconds - if it completes, navigate to song-select
+        redButtonTimerRef.current = setTimeout(() => {
+          console.log("Red button held for 2+ seconds - returning to song select");
+          router.push('/memory-listening/song-select');
+        }, 2000);
+      } else {
+        // Button released
+        const pressTime = redButtonPressTimeRef.current;
+        
+        // Clear the long-press timer
+        if (redButtonTimerRef.current) {
+          clearTimeout(redButtonTimerRef.current);
+          redButtonTimerRef.current = null;
+        }
+        
+        // If we have a press start time, calculate duration
+        if (pressTime) {
+          const pressDuration = Date.now() - pressTime;
+          redButtonPressTimeRef.current = null;
+          
+          // If pressed for less than 1 second, trigger stop
+          if (pressDuration < 1000) {
+            console.log("Red button quick press - stopping video");
+            handleStop();
+          } else if (pressDuration >= 1000 && pressDuration < 2000) {
+            // Do nothing for presses between 1-2 seconds
+            console.log("Red button held between 1-2 seconds - no action");
+          }
+          // For presses >= 2 seconds, the timeout will handle navigation
+        }
+      }
+      return; // Skip the standard switch for red button
+    }
+    
+    // Only process other instructions if their state is true
     if (!state) return;
 
     switch (instruction) {
       case 'green':
         handlePlayPause();
         break;
-      // Red button (stop) functionality commented out
-      // case 'red':
-      //   handleStop();
-      //   break;
       case 'yellow':
         handleSubmit();
         break;
@@ -133,35 +174,39 @@ export default function SongPlay() {
   return (
     <div className="container">
       <WebSocketListener onMessage={handleInteraction} />
-      <div className="row mb-4">
+      <div className="row mb-">
         <div className="col-12">
-          <h2 className="text-center mb-4">Now Playing: {selectedVideo.title}</h2>
-          <p className="text-center text-muted">Video state: {isPlaying ? 'Playing' : 'Paused'}</p>
+          <h2 className="text-center m-5">Now Playing: {selectedVideo.title}</h2>
         </div>
       </div>
 
       <div className="row justify-content-center mb-4">
         <div className="col-12 col-md-8 col-lg-6">
           <div className="d-flex justify-content-center gap-2 mb-4">
-            <Button 
-              variant="primary" 
+            <button className='green-interact'
               onClick={handlePlayPause}
             >
-              {isPlaying ? 'Pause' : 'Play'}
-            </Button>
+                <h5>{isPlaying ? 'Pause' : 'Play'}</h5>
+              
+            </button>
             {/* Stop button still visible but functionality commented out */}
-            <Button 
-              variant="secondary" 
+            <button 
+              className='red-interact'
               onClick={handleStop}
             >
-              Stop
-            </Button>
+                <h5>
+                    Stop
+                </h5>
+            </button>
           </div>
         </div>
       </div>
 
       <div className="row justify-content-center mb-4">
-        <div className="col-12 col-md-8 col-lg-6">
+      <div className="col-1 mt-4">
+                    <div className="blue-interact rounded-circle" style={{ width: '50px', height: '50px'}}></div>
+                </div>
+        <div className="col-11 col-md-8 col-lg-6">
           <InputGroup>
             <Form.Control
               ref={textInputRef}
@@ -172,25 +217,29 @@ export default function SongPlay() {
               style={{ height: '100px' }}
               disabled={isSaving}
             />
-            <Button 
-              variant="primary"
-              onClick={handleSubmit}
-              disabled={isSaving || !memoryText.trim()}
-            >
-              {isSaving ? 'Saving...' : 'Submit'}
-            </Button>
+            <InputGroup.Text>
+                <button 
+                className='yellow-interact'
+                onClick={handleSubmit}
+                disabled={isSaving || !memoryText.trim()}
+                >
+                    <h5 style={{color: "black"}}>
+                    {isSaving ? 'Saving...' : 'Submit'}
+                    </h5>
+                </button>
+            </InputGroup.Text>
           </InputGroup>
         </div>
       </div>
       
       <div className="row justify-content-center mb-4">
         <div className="col-12 d-flex justify-content-center">
-          <Button 
-            className="btn btn-primary"
+          <button 
+            className="red-interact"
             onClick={() => router.push('/memory-listening/song-select')}
           >
-            Back to Song Select
-          </Button>
+            <h5>HOLD the red button to go back to song select</h5>
+          </button>
         </div>
       </div>
 
