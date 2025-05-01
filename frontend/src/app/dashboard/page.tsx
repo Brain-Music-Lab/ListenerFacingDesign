@@ -48,7 +48,7 @@ export default function Dashboard() {
         
         console.log("Received instruction:", instruction, "with state:", state);
         setCurrentPosition(([row, col]) => {
-            let newRow = row;
+            const newRow = row;
             let newCol = col;
 
             switch (instruction) {

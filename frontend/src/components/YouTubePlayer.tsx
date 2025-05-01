@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
+import type { YT } from '../types/youtube';
 
 interface YouTubePlayerProps {
     videoId: string;
-    onPlayerReady?: (player: any) => void;
+    onPlayerReady?: (player: YT.Player) => void;
     onStateChange?: (state: number) => void;
 }
 
@@ -14,12 +15,8 @@ declare global {
         YT?: {
             Player: new (
                 elementId: string,
-                config: {
-                    videoId: string;
-                    playerVars?: Record<string, any>;
-                    events?: Record<string, (event: any) => void>;
-                }
-            ) => any;
+                config: YT.PlayerConfig
+            ) => YT.Player;
         };
     }
 }
@@ -32,11 +29,11 @@ export default function YouTubePlayer({
     onStateChange,
 }: YouTubePlayerProps) {
     const containerRef = useRef<HTMLDivElement>(null);
-    const playerRef = useRef<any>(null);
+    const playerRef = useRef<YT.Player | null>(null);
     const elementId = 'youtube-player';
     const isPlayerReady = useRef<boolean>(false);
 
-    const createPlayer = () => {
+    const createPlayer = useCallback(() => {
         if (!window.YT || !containerRef.current) return;
 
         const origin = window.location.origin;
@@ -60,22 +57,22 @@ export default function YouTubePlayer({
                 cc_load_policy: 0
             },
             events: {
-                onReady: (event) => {
+                onReady: (event: YT.PlayerEvent) => {
                     isPlayerReady.current = true;
                     event.target.setVolume(100);
                     onPlayerReady?.(event.target);
                 },
-                onStateChange: (event) => {
+                onStateChange: (event: YT.PlayerEvent) => {
                     if (onStateChange) {
                         onStateChange(event.data);
                     }
                 },
-                onError: (event) => {
+                onError: (event: YT.PlayerEvent) => {
                     console.error('YouTube Player Error:', event.data);
                 }
             }
         });
-    };
+    }, [videoId, onPlayerReady, onStateChange]);
 
     // Load YouTube API and initialize player
     useEffect(() => {
@@ -102,7 +99,7 @@ export default function YouTubePlayer({
                 }
             }
         };
-    }, []);
+    }, [createPlayer]);
 
     // Handle video ID changes
     useEffect(() => {
@@ -114,10 +111,9 @@ export default function YouTubePlayer({
                     videoId,
                     startSeconds: 0,
                 });
-            } catch (e: any) {
+            } catch (e) {
                 console.error('Error loading video:', e);
-                // If we get error 150, try to load as a regular embed
-                if (e?.toString().includes('150')) {
+                if (e instanceof Error && e.toString().includes('150')) {
                     window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
                 }
             }
@@ -127,18 +123,8 @@ export default function YouTubePlayer({
     }, [videoId]);
 
     return (
-        <div 
-            ref={containerRef} 
-            style={{
-                width: '320px',
-                height: '180px',
-                position: 'fixed',
-                bottom: '20px',
-                right: '20px',
-                zIndex: 1000,
-            }}
-        >
-            <div id={elementId} />
+        <div ref={containerRef} className="w-100 h-100">
+            <div id={elementId} className="w-100 h-100" />
         </div>
     );
 }

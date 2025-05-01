@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import YouTubePlayer from '../../../components/YouTubePlayer';
 import WebSocketListener from '../../../components/WebSocketListener';
+import type { YT } from '../../../types/youtube.d';
 
 const PlayerState = {
     PLAYING: 1,
@@ -20,7 +21,7 @@ export default function SongPlay() {
     const [isPlaying, setIsPlaying] = useState(true);
     const [memoryText, setMemoryText] = useState('');
     const [isSaving, setIsSaving] = useState(false);
-    const playerInstanceRef = useRef<any>(null);
+    const playerInstanceRef = useRef<YT.Player | null>(null);
     const textInputRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
@@ -29,7 +30,7 @@ export default function SongPlay() {
         }
     }, [selectedVideo, router]);
 
-    const handlePlayerReady = (player: any) => {
+    const handlePlayerReady = (player: YT.Player) => {
         playerInstanceRef.current = player;
     };
 
@@ -90,8 +91,11 @@ export default function SongPlay() {
         }
     };
 
-    const handleInteraction = (message: string) => {
-        switch (message) {
+    const handleInteraction = (message: { [key: string]: boolean }) => {
+        const [[instruction, state]] = Object.entries(message);
+        if (!state) return;
+
+        switch (instruction) {
             case 'green':
                 handlePlayPause();
                 break;
@@ -119,52 +123,52 @@ export default function SongPlay() {
             <div className="row mb-4">
                 <div className="col-12">
                     <h2 className="text-center mb-4">Now Playing: {selectedVideo.title}</h2>
-                    <div className="audio-container mb-4">
-                        <YouTubePlayer
-                            videoId={selectedVideo.id}
-                            onPlayerReady={handlePlayerReady}
-                            onStateChange={handleStateChange}
-                        />
-                        <div className="d-flex justify-content-center gap-2 mb-4">
-                            <Button 
-                                variant="primary" 
-                                onClick={handlePlayPause}
-                            >
-                                {isPlaying ? 'Pause' : 'Play'}
-                            </Button>
-                            <Button 
-                                variant="secondary" 
-                                onClick={handleStop}
-                            >
-                                Stop
-                            </Button>
-                        </div>
-                    </div>
+                </div>
+            </div>
 
-                    <div className="memory-input mb-4">
-                        <InputGroup>
-                            <Form.Control
-                                ref={textInputRef}
-                                as="textarea"
-                                placeholder="What memory does this song bring up for you?"
-                                value={memoryText}
-                                onChange={(e) => setMemoryText(e.target.value)}
-                                style={{ height: '100px' }}
-                                disabled={isSaving}
-                            />
-                            <Button 
-                                variant="primary"
-                                onClick={handleSubmit}
-                                disabled={isSaving || !memoryText.trim()}
-                            >
-                                {isSaving ? 'Saving...' : 'Submit'}
-                            </Button>
-                        </InputGroup>
+            <div className="row justify-content-center mb-4">
+                <div className="col-12 col-md-8 col-lg-6">
+                    <div className="d-flex justify-content-center gap-2 mb-4">
+                        <Button 
+                            variant="primary" 
+                            onClick={handlePlayPause}
+                        >
+                            {isPlaying ? 'Pause' : 'Play'}
+                        </Button>
+                        <Button 
+                            variant="secondary" 
+                            onClick={handleStop}
+                        >
+                            Stop
+                        </Button>
                     </div>
                 </div>
             </div>
+
+            <div className="row justify-content-center mb-4">
+                <div className="col-12 col-md-8 col-lg-6">
+                    <InputGroup>
+                        <Form.Control
+                            ref={textInputRef}
+                            as="textarea"
+                            placeholder="What memory does this song bring up for you?"
+                            value={memoryText}
+                            onChange={(e) => setMemoryText(e.target.value)}
+                            style={{ height: '100px' }}
+                            disabled={isSaving}
+                        />
+                        <Button 
+                            variant="primary"
+                            onClick={handleSubmit}
+                            disabled={isSaving || !memoryText.trim()}
+                        >
+                            {isSaving ? 'Saving...' : 'Submit'}
+                        </Button>
+                    </InputGroup>
+                </div>
+            </div>
             
-            <div className="row">
+            <div className="row justify-content-center mb-4">
                 <div className="col-12 d-flex justify-content-center">
                     <Button 
                         className="btn btn-primary"
@@ -172,6 +176,18 @@ export default function SongPlay() {
                     >
                         Back to Song Select
                     </Button>
+                </div>
+            </div>
+
+            <div className="row justify-content-center">
+                <div className="col-12 col-md-8 col-lg-6">
+                    <div className="ratio ratio-16x9">
+                        <YouTubePlayer
+                            videoId={selectedVideo.id}
+                            onPlayerReady={handlePlayerReady}
+                            onStateChange={handleStateChange}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

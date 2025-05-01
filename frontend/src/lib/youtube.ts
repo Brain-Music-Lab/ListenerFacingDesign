@@ -1,6 +1,21 @@
 const YOUTUBE_API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 const YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/search';
 
+interface YouTubeApiResponse {
+    id: {
+        videoId: string;
+    };
+    snippet: {
+        title: string;
+        thumbnails: {
+            medium: {
+                url: string;
+            };
+        };
+        channelTitle: string;
+    };
+}
+
 export interface YouTubeSearchResult {
     id: string;
     title: string;
@@ -41,7 +56,7 @@ export async function searchYouTubeVideos(query: string): Promise<YouTubeSearchR
             throw new Error('No results found');
         }
 
-        return data.items.map((item: any) => ({
+        return data.items.map((item: YouTubeApiResponse) => ({
             id: item.id.videoId,
             title: item.snippet.title,
             thumbnail: item.snippet.thumbnails.medium.url,

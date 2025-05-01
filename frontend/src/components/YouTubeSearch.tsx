@@ -9,6 +9,7 @@ import Card from 'react-bootstrap/Card';
 import Alert from 'react-bootstrap/Alert';
 import { searchYouTubeVideos, YouTubeSearchResult } from '../lib/youtube';
 import { useVideo } from '../contexts/VideoContext';
+import Image from 'next/image';
 
 interface YouTubeSearchProps {
     searchRef?: RefObject<HTMLInputElement | null>;
@@ -96,10 +97,13 @@ export default function YouTubeSearch({ searchRef, videoRefs, selectedVideoIndex
                                 style={{ cursor: 'pointer', ...getVideoStyle(index) }}
                             >
                                 <Card.Body className="d-flex align-items-center">
-                                    <img 
-                                        src={result.thumbnail} 
-                                        alt={result.title}
-                                        style={{ width: '120px', marginRight: '1rem' }}
+                                    <Image
+                                        src={result.thumbnail}
+                                        alt={`Thumbnail for ${result.title}`}
+                                        width={120}
+                                        height={90}
+                                        className="me-3"
+                                        unoptimized // Since YouTube thumbnails are already optimized
                                     />
                                     <div>
                                         <Card.Title>{result.title}</Card.Title>
