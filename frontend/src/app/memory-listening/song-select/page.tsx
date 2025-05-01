@@ -117,7 +117,7 @@ export default function SongSelect() {
                         className="red-interact w-25"
                         onClick={() => router.push('/dashboard')}
                     >
-                        Back to Dashboard
+                        <h5>Back to Dashboard</h5>
                     </button>
                 </div>
             </div>
