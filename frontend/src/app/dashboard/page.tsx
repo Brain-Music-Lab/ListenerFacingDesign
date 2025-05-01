@@ -41,10 +41,13 @@ export default function Dashboard() {
     }, [currentPosition]); // Removed getCurrentIndex from dependencies
 
     const handleInteraction = useCallback((message: { [key: string]: boolean }) => {
-        const [[instruction, state]] = Object.entries(message)
-
+        console.log("got something");
+        const [[instruction, state]] = Object.entries(message);
         
-        console.log("Received direction:", instruction);
+        // Only process the instruction if its state is true
+        if (!state) return;
+        
+        console.log("Received instruction:", instruction, "with state:", state);
         setCurrentPosition(([row, col]) => {
             let newRow = row;
             let newCol = col;
