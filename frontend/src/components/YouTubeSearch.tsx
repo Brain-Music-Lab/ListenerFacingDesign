@@ -63,7 +63,7 @@ export default function YouTubeSearch({ searchRef, videoRefs, selectedVideoIndex
                     <Form.Control
                         ref={searchRef}
                         type="text"
-                        placeholder="Search for a song (e.g., 'Love Shack B52s')"
+                        placeholder="Use the keyboard to search for a song"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         disabled={isLoading}

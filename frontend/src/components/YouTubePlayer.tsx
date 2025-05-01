@@ -47,7 +47,7 @@ export default function YouTubePlayer({
                 disablekb: 1,
                 enablejsapi: 1,
                 origin: origin,
-                host: hostname === 'localhost' ? 'https://www.youtube-nocookie.com' : undefined,
+                host: hostname === 'localhost' ? 'https://www.youtube.com' : undefined,
                 playsinline: 1,
                 modestbranding: 1,
                 fs: 0,
