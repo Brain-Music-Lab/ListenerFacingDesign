@@ -66,6 +66,7 @@ export default function SongSelect() {
             // Trigger click on selected video
             const selectedVideo = searchResultsRef.current[selectedVideoIndex];
             if (selectedVideo) {
+                console.log("click");
                 selectedVideo.click();
             }
         } else if (instruction === 'up' && selectedVideoIndex > 0) {
