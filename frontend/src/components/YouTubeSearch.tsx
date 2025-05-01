@@ -3,7 +3,6 @@
 import { useState, RefObject } from 'react';
 import { useRouter } from 'next/navigation';
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Card from 'react-bootstrap/Card';
 import Alert from 'react-bootstrap/Alert';
@@ -15,9 +14,10 @@ interface YouTubeSearchProps {
     searchRef?: RefObject<HTMLInputElement | null>;
     videoRefs?: RefObject<HTMLDivElement[]>;
     selectedVideoIndex?: number;
+    onSearchComplete?: () => void;
 }
 
-export default function YouTubeSearch({ searchRef, videoRefs, selectedVideoIndex = -1 }: YouTubeSearchProps) {
+export default function YouTubeSearch({ searchRef, videoRefs, selectedVideoIndex = -1, onSearchComplete }: YouTubeSearchProps) {
     const router = useRouter();
     const { setSelectedVideo } = useVideo();
     const [searchQuery, setSearchQuery] = useState('');
@@ -35,6 +35,9 @@ export default function YouTubeSearch({ searchRef, videoRefs, selectedVideoIndex
             setSearchResults(results);
             if (videoRefs?.current) {
                 videoRefs.current = [];
+            }
+            if (onSearchComplete) {
+                onSearchComplete();
             }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred while searching');
@@ -63,14 +66,22 @@ export default function YouTubeSearch({ searchRef, videoRefs, selectedVideoIndex
                     <Form.Control
                         ref={searchRef}
                         type="text"
-                        placeholder="Use the keyboard toearch for a song"
+                        placeholder="Use the keyboard to search for a song"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         disabled={isLoading}
                     />
-                    <Button type="submit" variant="primary" disabled={isLoading}>
-                        {isLoading ? 'Searching...' : 'Search'}
-                    </Button>
+                    <InputGroup.Text>
+                        <button 
+                            type="submit"
+                            className="yellow-interact"
+                            disabled={isLoading}
+                        >
+                            <h5 style={{ color: "black" }}>
+                                {isLoading ? 'Searching...' : 'Search'}
+                            </h5> 
+                        </button>
+                    </InputGroup.Text>
                 </InputGroup>
             </Form>
             

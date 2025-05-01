@@ -38,3 +38,29 @@ h1 {
 p {
   font-size: 16px;
 }
+
+.red-interact, .green-interact, .blue-interact, .yellow-interact {
+  margin-bottom: 20px; 
+  border: none; 
+  border-radius: 25px; 
+  padding: 10px; 
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  transition: filter 0.3s ease;
+}
+
+.green-interact {
+  background-color: #24b324; 
+}
+
+.red-interact {
+  background-color: #cc2929;
+}
+
+.yellow-interact {
+  background-color: #e6e622;
+}
+
+.blue-interact {
+  background-color: #2233e6;
+}

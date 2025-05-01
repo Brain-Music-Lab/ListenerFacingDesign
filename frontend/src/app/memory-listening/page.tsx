@@ -47,23 +47,29 @@ export default function MemoryListening() {
     return (
         <div className="container">
             <WebSocketListener onMessage={handleInteraction} />
-            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-                <Button 
-                    ref={setButtonRef(0)}
-                    className="btn btn-secondary" 
-                    onClick={() => router.push('/dashboard')}
-                    style={buttonStyle(0)}
-                >
-                    Back to Dashboard
-                </Button>
-                <Button 
-                    ref={setButtonRef(1)}
-                    className="btn btn-primary" 
-                    onClick={() => router.push('/memory-listening/song-select')}
-                    style={buttonStyle(1)}
-                >
-                    Go to Song Select
-                </Button>
+            <div className="row d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+                <div className='col-3'></div>
+                <div className="col-3">
+                    <button 
+                        ref={setButtonRef(0)}
+                        className="red-interact" 
+                        onClick={() => router.push('/dashboard')}
+                        style={buttonStyle(0)}
+                    >
+                        Back to Dashboard
+                    </button>
+                </div>
+                <div className="col-3">
+                    <button 
+                        ref={setButtonRef(1)}
+                        className="green-interact" 
+                        onClick={() => router.push('/memory-listening/song-select')}
+                        style={buttonStyle(1)}
+                    >
+                        Go to Song Select
+                    </button>
+                </div>
+                <div className="col-3"></div>
             </div>
         </div>
     );

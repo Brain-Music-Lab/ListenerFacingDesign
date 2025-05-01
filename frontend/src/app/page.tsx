@@ -43,10 +43,10 @@ export default function Home() {
             </p>
           </div>
           <div className="col text-center">
-            <Button variant="primary" size="lg" className="mt-3"
+            <button className="green-interact w-25"
               onClick={() => router.push("/dashboard")}>
               Accept
-            </Button>
+            </button>
           </div>
         </div>
       </div>

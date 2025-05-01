@@ -92,34 +92,34 @@ export default function Dashboard() {
             </div>
             <div className="row row-cols-2 row-cols-md-3 g-4 justify-content-center">
                 <div className="col d-flex justify-content-center">
-                    <Button 
+                    <button 
                         ref={setButtonRef(0)}
-                        className="btn btn-primary"
+                        className="green-interact"
                         onClick={() => router.push('/memory-listening/')}
                         style={buttonStyle(0)}
                     >
-                        Memorable Music
-                    </Button>
+                        <h5>Memorable Music</h5>
+                    </button>
                 </div>
                 <div className="col d-flex justify-content-center">
-                    <Button 
+                    <button 
                         ref={setButtonRef(1)}
-                        className="btn btn-primary"
+                        className="green-interact"
                         onClick={() => {}}
                         style={buttonStyle(1)}
                     >
                         About this Device
-                    </Button>
+                    </button>
                 </div>
                 <div className="col d-flex justify-content-center">
-                    <Button 
+                    <button 
                         ref={setButtonRef(2)}
-                        className="btn btn-primary"
+                        className="green-interact"
                         onClick={() => {}}
                         style={buttonStyle(2)}
                     >
                         About the Lab
-                    </Button>
+                    </button>
                 </div>
             </div>
         </div>
