@@ -4,15 +4,11 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import YouTubeSearch from '../../../components/YouTubeSearch';
 import WebSocketListener from '../../../components/WebSocketListener';
-import { useVideo } from '../../../contexts/VideoContext';
-import { YouTubeSearchResult } from '../../../lib/youtube';
 
 export default function SongSelect() {
     const router = useRouter();
-    const { setSelectedVideo } = useVideo();
     const [selectedVideoIndex, setSelectedVideoIndex] = useState<number>(-1);
     const [searchCompleted, setSearchCompleted] = useState(false);
-    const [searchResults, setSearchResults] = useState<YouTubeSearchResult[]>([]);
     const searchRef = useRef<HTMLInputElement>(null);
     const searchResultsRef = useRef<HTMLDivElement[]>([]);
     const indicatorRef = useRef<HTMLDivElement>(null);
@@ -47,18 +43,8 @@ export default function SongSelect() {
         }
     }, [selectedVideoIndex]);
 
-    const handleSearchComplete = (results: YouTubeSearchResult[]) => {
-        setSearchResults(results);
+    const handleSearchComplete = () => {
         setSearchCompleted(true);
-    };
-    
-    // Function to handle video selection
-    const selectVideo = (index: number) => {
-        if (index >= 0 && index < searchResults.length) {
-            console.log("Selecting video:", searchResults[index].title);
-            setSelectedVideo(searchResults[index]);
-            router.push('/memory-listening/song-play');
-        }
     };
 
     const handleInteraction = (message: {[key: string]: boolean}) => {
@@ -77,8 +63,13 @@ export default function SongSelect() {
         } else if (instruction === 'red') {
             router.push('/dashboard');
         } else if (instruction === 'green' && selectedVideoIndex >= 0) {
-            // Select the video directly instead of clicking the element
-            selectVideo(selectedVideoIndex);
+            // Trigger click on selected video
+            const selectedVideo = searchResultsRef.current[selectedVideoIndex];
+            if (selectedVideo) {
+                console.log("click");
+                console.log(selectedVideo);
+                selectedVideo.click();
+            }
         } else if (instruction === 'up' && selectedVideoIndex > 0) {
             setSelectedVideoIndex(prev => prev - 1);
         } else if (instruction === 'down' && selectedVideoIndex < searchResultsRef.current.length - 1) {
