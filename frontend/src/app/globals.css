@@ -36,7 +36,7 @@ h1 {
 }
 
 p {
-  font-size: 16px;
+  font-size: 20px !important;
 }
 
 .red-interact, .green-interact, .blue-interact, .yellow-interact {

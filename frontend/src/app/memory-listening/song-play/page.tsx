@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import YouTubePlayer from '../../../components/YouTubePlayer';
 import WebSocketListener from '../../../components/WebSocketListener';
-import type { Player } from '@/types/youtube.ts';
+import type { Player } from '../../../types/youtube.ts';
 
 // Define YouTube player states
 const PlayerState = {
@@ -41,50 +41,52 @@ export default function SongPlay() {
 
   // Handle when player is ready
   const handlePlayerReady = (player: Player) => {
-    console.log("Player ready, storing reference");
+    console.log("🎮 song-play: handlePlayerReady called with player:", player);
     playerRef.current = player;
     
     // Ensure video starts playing when player is ready
+    console.log("🎮 song-play: Calling player.playVideo() from handlePlayerReady");
     player.playVideo();
     setIsPlaying(true);
   };
 
   // Handle player state changes
   const handleStateChange = (state: number) => {
-    console.log("handleStateChange called with state:", state);
+    console.log("🎮 song-play: handleStateChange called with state:", state);
     if (state === PlayerState.PLAYING) {
-      console.log("Setting isPlaying to true");
+      console.log("🎮 song-play: Setting isPlaying to true");
       setIsPlaying(true);
     } else if (state === PlayerState.PAUSED || state === PlayerState.ENDED) {
-      console.log("Setting isPlaying to false");
+      console.log("🎮 song-play: Setting isPlaying to false");
       setIsPlaying(false);
     }
   };
 
   // Play or pause the video
   const handlePlayPause = () => {
+    console.log("🎮 song-play: handlePlayPause called, playerRef.current:", playerRef.current, "isPlaying:", isPlaying);
     if (!playerRef.current) {
-      console.log("Can't play/pause - playerRef.current is null");
+      console.error("🎮 song-play: Can't play/pause - playerRef.current is null");
       return;
     }
     
-    console.log("handlePlayPause called, current isPlaying:", isPlaying);
-    
     if (isPlaying) {
       // Pause the video if currently playing
-      console.log("Calling pauseVideo()");
+      console.log("🎮 song-play: Calling pauseVideo()");
       playerRef.current.pauseVideo();
     } else {
       // Play the video if currently paused
-      console.log("Calling playVideo()");
+      console.log("🎮 song-play: Calling playVideo()");
       playerRef.current.playVideo();
     }
   };
 
   
   const handleStop = () => {
+    console.log("🎮 song-play: handleStop called, playerRef.current:", playerRef.current);
     if (!playerRef.current) return;
     
+    console.log("🎮 song-play: Calling stopVideo()");
     playerRef.current.stopVideo();
     setIsPlaying(false);
   };
@@ -172,6 +174,10 @@ export default function SongPlay() {
   }
 
   return (
+    <div className="container-fluid" style={{
+        minHeight: "100vh",
+        backgroundColor: "#cccfcb"
+    }}>
     <div className="container">
       <WebSocketListener onMessage={handleInteraction} />
       <div className="row mb-">
@@ -262,6 +268,7 @@ export default function SongPlay() {
           margin: 0 auto;
         }
       `}</style>
+    </div>
     </div>
   );
 }

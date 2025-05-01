@@ -81,6 +81,10 @@ export default function SongSelect() {
     };
 
     return (
+        <div className="container-fluid" style={{
+            minHeight: "100vh",
+            backgroundColor: "#cccfcb"
+        }}>
         <div className="container position-relative">
             <WebSocketListener onMessage={handleInteraction} />
             <div className="row mb-4">
@@ -125,6 +129,7 @@ export default function SongSelect() {
                     </button>
                 </div>
             </div>
+        </div>
         </div>
     )
 }

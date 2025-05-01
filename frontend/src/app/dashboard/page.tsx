@@ -79,6 +79,10 @@ export default function Dashboard() {
     }), [getCurrentIndex]);
 
     return (
+        <div className="container-fluid" style={{
+            minHeight: "100vh",
+            backgroundColor: "#cccfcb"
+        }}>
         <div className="container">
             <WebSocketListener onMessage={handleInteraction} />
             <div className="row">
@@ -104,23 +108,26 @@ export default function Dashboard() {
                     <button 
                         ref={setButtonRef(1)}
                         className="green-interact"
-                        onClick={() => {}}
+                        onClick={() => {router.push("/data-station")}}
                         style={buttonStyle(1)}
                     >
-                        About this Device
+                        <h5>About this Device</h5>
+                        
                     </button>
                 </div>
-                <div className="col d-flex justify-content-center">
+                {/* <div className="col d-flex justify-content-center">
                     <button 
                         ref={setButtonRef(2)}
                         className="green-interact"
                         onClick={() => {}}
                         style={buttonStyle(2)}
                     >
-                        About the Lab
+                        <h5>About the Lab</h5>
+                        
                     </button>
-                </div>
+                </div> */}
             </div>
+        </div>
         </div>
     )
 }
