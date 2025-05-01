@@ -44,7 +44,7 @@ export default function MemoryListening() {
                         className="red-interact" 
                         onClick={() => router.push('/dashboard')}
                     >
-                        Back to Dashboard
+                        <h5>Back to Dashboard</h5>
                     </button>
                 </div>
                 <div className="col-3">
@@ -53,7 +53,7 @@ export default function MemoryListening() {
                         className="green-interact" 
                         onClick={() => router.push('/memory-listening/song-select')}
                     >
-                        Go to Song Select
+                        <h5>Go to Song Select</h5>
                     </button>
                 </div>
                 <div className="col-3"></div>
