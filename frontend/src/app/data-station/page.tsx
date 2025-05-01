@@ -50,7 +50,7 @@ export default function About() {
 
                 <h2>Future Developments</h2>
                 <p>
-                    There is currently one demo study running on this device-- feel free to try it out! In the coming months, we will expand this system to host more of our lab's research, and install it in it's semi-permanent home!
+                    There is currently one demo study running on this device&mdash; feel free to try it out! In the coming months, we will expand this system to host more of our lab&apos;s research, and install it in it&apos;s semi-permanent home!
                 </p>
 
                 <div className="text-center">
