@@ -157,7 +157,7 @@ export default function YouTubePlayer({
             
             // Set default volume
             console.log("🔊 Setting player volume to 100");
-            event.target.setVolume(100);
+            event.target.setVolume(50);
             
             // Explicitly start playing the video
             console.log("▶️ Calling playVideo");
