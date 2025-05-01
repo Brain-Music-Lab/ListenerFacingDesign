@@ -114,8 +114,12 @@ export default function YouTubePlayer({
                     videoId,
                     startSeconds: 0,
                 });
-            } catch (e) {
+            } catch (e: any) {
                 console.error('Error loading video:', e);
+                // If we get error 150, try to load as a regular embed
+                if (e?.toString().includes('150')) {
+                    window.open(`https://www.youtube.com/watch?v=${videoId}`, '_blank');
+                }
             }
         };
 
@@ -126,13 +130,12 @@ export default function YouTubePlayer({
         <div 
             ref={containerRef} 
             style={{
-                width: '160px',
-                height: '90px',
+                width: '320px',
+                height: '180px',
                 position: 'fixed',
                 bottom: '20px',
                 right: '20px',
                 zIndex: 1000,
-                background: '#000'
             }}
         >
             <div id={elementId} />
