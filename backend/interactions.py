@@ -82,19 +82,19 @@ def initialize_hardware():
     joystick = {
         "up": {
             "state": False,
-            "pin": 27
+            "pin": 22
         },
         "down": {
             "state": False,
-            "pin": 22
+            "pin": 27
         },
         "left": {
             "state": False,
-            "pin": 17
+            "pin": 4
         },
         "right": {
             "state": False,
-            "pin": 4
+            "pin": 17
         }
     }
 
