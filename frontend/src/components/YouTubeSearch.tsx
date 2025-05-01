@@ -14,7 +14,7 @@ interface YouTubeSearchProps {
     searchRef?: RefObject<HTMLInputElement | null>;
     videoRefs?: RefObject<HTMLDivElement[]>;
     selectedVideoIndex?: number;
-    onSearchComplete?: () => void;
+    onSearchComplete?: (results: YouTubeSearchResult[]) => void;
 }
 
 export default function YouTubeSearch({ searchRef, videoRefs, selectedVideoIndex = -1, onSearchComplete }: YouTubeSearchProps) {
@@ -37,11 +37,14 @@ export default function YouTubeSearch({ searchRef, videoRefs, selectedVideoIndex
                 videoRefs.current = [];
             }
             if (onSearchComplete) {
-                onSearchComplete();
+                onSearchComplete(results);
             }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred while searching');
             setSearchResults([]);
+            if (onSearchComplete) {
+                onSearchComplete([]);
+            }
         } finally {
             setIsLoading(false);
         }
