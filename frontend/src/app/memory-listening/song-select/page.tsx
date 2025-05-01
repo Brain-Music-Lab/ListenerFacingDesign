@@ -73,6 +73,10 @@ export default function SongSelect() {
             setSelectedVideoIndex(prev => prev - 1);
         } else if (instruction === 'down' && selectedVideoIndex < searchResultsRef.current.length - 1) {
             setSelectedVideoIndex(prev => prev + 1);
+        } else if (instruction === 'blue') {
+            if (searchRef.current) {
+                searchRef.current.focus();
+            }
         }
     };
 
