@@ -39,6 +39,7 @@ async def handle_input(joystick, buttons):
         buttons, button_out = process_button_input(buttons)
         if button_out:
             await broadcast_message(json.dumps(button_out))
+        await asyncio.sleep(0.01)
 
 async def handle_client(websocket):
     """Handle individual client connections."""

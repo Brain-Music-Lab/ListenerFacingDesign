@@ -40,7 +40,12 @@ export default function Dashboard() {
         }
     }, [currentPosition]); // Removed getCurrentIndex from dependencies
 
-    const handleDirection = useCallback((direction: string) => {
+    const handleInteraction = useCallback((message: Record<string, boolean>) => {
+        const [direction] = Object.entries(message)
+            .filter(([_, value]) => value)
+            .map(([key, _]) => key);
+
+        
         console.log("Received direction:", direction);
         setCurrentPosition(([row, col]) => {
             let newRow = row;
@@ -75,7 +80,7 @@ export default function Dashboard() {
 
     return (
         <div className="container">
-            <WebSocketListener onMessage={handleDirection} />
+            <WebSocketListener onMessage={handleInteraction} />
             <div className="row">
                 <div className="col-12">
                     <h1 className="m-4 text-center">Brain Music Lab Dashboard</h1>

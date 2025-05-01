@@ -2,6 +2,10 @@ from RPi import GPIO  # For Pi 5 (install rpi-lgpio first)
 import time  # MUST keep this import
 
 
+def test_foo():
+    return "hello"
+
+
 def process_joystick_input(joystick: dict) -> tuple[dict, dict | None]:
     for direction in joystick.keys():
         pin = joystick[direction]["pin"]
