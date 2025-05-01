@@ -60,22 +60,41 @@ def turn_light_off(buttons_: dict, color: str):
 
 
 def initialize_hardware():
+    # joystick = {
+    #     "up": {
+    #         "state": False,
+    #         "pin": 17
+    #     },
+    #     "down": {
+    #         "state": False,
+    #         "pin": 4
+    #     },
+    #     "left": {
+    #         "state": False,
+    #         "pin": 22
+    #     },
+    #     "right": {
+    #         "state": False,
+    #         "pin": 27
+    #     }
+    # }
+
     joystick = {
         "up": {
             "state": False,
-            "pin": 17
+            "pin": 27
         },
         "down": {
             "state": False,
-            "pin": 4
+            "pin": 22
         },
         "left": {
             "state": False,
-            "pin": 22
+            "pin": 17
         },
         "right": {
             "state": False,
-            "pin": 27
+            "pin": 4
         }
     }
 
