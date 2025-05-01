@@ -21,7 +21,12 @@ export default function WebSocketListener({ onMessage }: WebSocketListenerProps)
         ws.current.onopen = () => console.log("Web socket opened");
         ws.current.onmessage = (event) => {
             if (onMessageRef.current) {
-                onMessageRef.current(event.data);
+                try {
+                    const parsedData = JSON.parse(event.data);
+                    onMessageRef.current(parsedData);
+                } catch (e) {
+                    console.error("Failed to parse WebSocket message:", e);
+                }
             }
         };
         ws.current.onclose = () => console.log("Web socket closed");
