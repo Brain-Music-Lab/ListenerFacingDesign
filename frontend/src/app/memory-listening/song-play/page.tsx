@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import YouTubePlayer from '../../../components/YouTubePlayer';
 import WebSocketListener from '../../../components/WebSocketListener';
-import type { Player } from '../../../types/youtube.ts';
+import type { Player } from '@/types/youtube.ts';
 
 // Define YouTube player states
 const PlayerState = {
