@@ -232,7 +232,7 @@ export default function YouTubePlayer({
         #${playerElementId} iframe {
           width: 100%;
           height: 100%;
-          object-fit: contain;
+          object-fit: cover; /* Changed from 'contain' to 'cover' to fill the container */
         }
         .player-error-overlay {
           position: absolute;

@@ -1,15 +1,33 @@
 'use client'
  
 import { useRouter } from 'next/navigation'
-
+import { useCallback } from 'react';
 import styles from "./page.module.css";
 import Button from "react-bootstrap/Button";
+import WebSocketListener from '../components/WebSocketListener';
 
 export default function Home() {
   const router = useRouter();
 
+  const handleInteraction = useCallback((message: { [key: string]: boolean }) => {
+    const [[instruction, state]] = Object.entries(message);
+    
+    // Only process the instruction if its state is true
+    if (!state) return;
+    
+    console.log("Received instruction:", instruction, "with state:", state);
+    
+    switch (instruction) {
+      case 'green':
+        // Handle green button click - navigate to dashboard
+        router.push("/dashboard");
+        break;
+    }
+  }, [router]);
+
   return (
     <div className={"min-vh-100 d-flex align-items-center justify-content-center"}>
+      <WebSocketListener onMessage={handleInteraction} />
       <div className="container">
         <div className="row row-cols-1 justify-content-center">
           <div className="col text-center">

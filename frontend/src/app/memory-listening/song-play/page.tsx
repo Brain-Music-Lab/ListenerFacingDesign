@@ -78,15 +78,14 @@ export default function SongPlay() {
     }
   };
 
-  // Stop functionality commented out as requested
-  /*
+  
   const handleStop = () => {
     if (!playerRef.current) return;
     
     playerRef.current.stopVideo();
     setIsPlaying(false);
   };
-  */
+  
 
   // Save memory text
   const handleSubmit = async () => {
@@ -169,7 +168,7 @@ export default function SongPlay() {
             {/* Stop button still visible but functionality commented out */}
             <Button 
               variant="secondary" 
-              disabled={true} // Disabled as requested
+              onClick={handleStop}
             >
               Stop
             </Button>
@@ -213,8 +212,8 @@ export default function SongPlay() {
 
       {/* Video player - moved to be smaller and under the back button */}
       <div className="row justify-content-center">
-        <div className="col-12 col-md-6 col-lg-4">
-          <div className="youtube-player-container" style={{ width: '100%', height: '360px' }}>
+        <div className="col-12 d-flex justify-content-center">
+          <div className="youtube-player-container" style={{ width: '690px', height: '400px' }}>
             <YouTubePlayer
               videoId={selectedVideo.id}
               onPlayerReady={handlePlayerReady}
@@ -227,6 +226,7 @@ export default function SongPlay() {
         .youtube-player-container {
           position: relative;
           overflow: hidden;
+          margin: 0 auto;
         }
       `}</style>
     </div>
