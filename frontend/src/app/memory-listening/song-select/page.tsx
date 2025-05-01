@@ -19,8 +19,13 @@ export default function SongSelect() {
         }
     }, []);
 
-    const handleInteraction = (message: string) => {
-        if (message === 'blue') {
+    const handleInteraction = (message: {[key: string]: boolean}) => {
+
+        const [[instruction, state]] = Object.entries(message);
+
+        if (!state) return;
+
+        if (instruction === 'yellow') {
             // Trigger search button click
             const searchButton = document.querySelector('button[type="submit"]') as HTMLButtonElement;
             if (searchButton) {
@@ -28,17 +33,17 @@ export default function SongSelect() {
                 // After search, select the first video
                 setSelectedVideoIndex(0);
             }
-        } else if (message === 'red') {
+        } else if (instruction === 'red') {
             router.push('/dashboard');
-        } else if (message === 'green' && selectedVideoIndex >= 0) {
+        } else if (instruction === 'green' && selectedVideoIndex >= 0) {
             // Trigger click on selected video
             const selectedVideo = searchResultsRef.current[selectedVideoIndex];
             if (selectedVideo) {
                 selectedVideo.click();
             }
-        } else if (message === 'up' && selectedVideoIndex > 0) {
+        } else if (instruction === 'up' && selectedVideoIndex > 0) {
             setSelectedVideoIndex(prev => prev - 1);
-        } else if (message === 'down' && selectedVideoIndex < searchResultsRef.current.length - 1) {
+        } else if (instruction === 'down' && selectedVideoIndex < searchResultsRef.current.length - 1) {
             setSelectedVideoIndex(prev => prev + 1);
         }
     };
