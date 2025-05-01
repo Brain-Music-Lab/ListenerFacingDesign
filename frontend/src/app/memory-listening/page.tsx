@@ -1,7 +1,6 @@
 'use client'
 
 import { useRouter } from 'next/navigation';
-import Button from 'react-bootstrap/Button';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import WebSocketListener from '../../components/WebSocketListener';
 
@@ -25,7 +24,10 @@ export default function MemoryListening() {
             setSelectedButton(1);
         }
         else if (instruction === 'green') {
-            buttonRefs.current[selectedButton]?.click();
+            buttonRefs.current[1]?.click();
+        }
+        else if (instruction === 'red') {
+            buttonRefs.current[0]?.click();
         }
     };
 
