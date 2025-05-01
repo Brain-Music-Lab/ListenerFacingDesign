@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import { YouTubeSearchResult } from '../lib/youtube';
 
 interface VideoContextType {
@@ -16,10 +16,10 @@ export function VideoProvider({ children }: { children: React.ReactNode }) {
     const [selectedVideo, setSelectedVideo] = useState<YouTubeSearchResult | null>(null);
     const [sessionId, setSessionId] = useState<string>(Date.now().toString());
 
-    const resetSession = () => {
+    const resetSession = useCallback(() => {
         setSessionId(Date.now().toString());
         setSelectedVideo(null);
-    };
+    }, []); // No dependencies needed since setters from useState are stable
 
     return (
         <VideoContext.Provider value={{ 
