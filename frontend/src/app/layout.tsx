@@ -26,6 +26,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta httpEquiv="Content-Security-Policy" content="frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com;" />
+        <meta httpEquiv="Access-Control-Allow-Origin" content="*" />
+      </head>
       <RootLayoutClient className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
       </RootLayoutClient>
