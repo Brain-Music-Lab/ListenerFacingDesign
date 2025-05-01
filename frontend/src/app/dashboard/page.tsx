@@ -19,6 +19,7 @@ export default function Dashboard() {
 
     // Reset session when dashboard mounts
     useEffect(() => {
+        console.log("New session")
         resetSession();
     }, [resetSession]);
 

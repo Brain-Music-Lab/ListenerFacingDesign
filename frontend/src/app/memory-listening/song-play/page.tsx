@@ -22,7 +22,7 @@ const PlayerState = {
 
 export default function SongPlay() {
   const router = useRouter();
-  const { selectedVideo, sessionId } = useVideo();
+  const { selectedVideo, sessionId, saveMemory } = useVideo();
   const [isPlaying, setIsPlaying] = useState(false); // Start with false until player is ready
   const [memoryText, setMemoryText] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -93,23 +93,7 @@ export default function SongPlay() {
 
     try {
       setIsSaving(true);
-      const response = await fetch('/api/memories', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          sessionId,
-          videoId: selectedVideo.id,
-          videoTitle: selectedVideo.title,
-          memoryText: memoryText.trim()
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save memory');
-      }
-
+      await saveMemory(memoryText.trim());
       setMemoryText('');
     } catch (error) {
       console.error('Error saving memory:', error);

@@ -1,8 +1,14 @@
 'use client'
 
-import { createContext, useState, useContext, ReactNode } from 'react';
+import { createContext, useState, useContext, ReactNode, useCallback } from 'react';
 import type { YT } from '../types/youtube';
 import { YouTubeSearchResult } from '../lib/youtube';
+
+// Define a Memory type
+interface Memory {
+  memoryText: string;
+  timestamp: number;
+}
 
 interface VideoState {
   videoId: string | null;
@@ -12,13 +18,15 @@ interface VideoState {
   playerError: string | null;
   selectedVideo: YouTubeSearchResult | null;
   sessionId: string;
-  setVideoId: (id: string) => void;
-  setPlayer: (player: YT.Player) => void;
+  setVideoId: (id: string | null) => void;
+  setPlayer: (player: YT.Player | null) => void;
   setIsPlaying: (isPlaying: boolean) => void;
   setCurrentVideoTitle: (title: string | null) => void;
   setPlayerError: (error: string | null) => void;
-  setSelectedVideo: (video: YouTubeSearchResult) => void;
+  setSelectedVideo: (video: YouTubeSearchResult | null) => void;
+  saveMemory: (memoryText: string) => Promise<void>;
   handlePlayerStateChange: (state: number) => void;
+  resetSession: () => void;
 }
 
 const defaultVideoState: VideoState = {
@@ -35,7 +43,9 @@ const defaultVideoState: VideoState = {
   setCurrentVideoTitle: () => {},
   setPlayerError: () => {},
   setSelectedVideo: () => {},
+  saveMemory: async () => {},
   handlePlayerStateChange: () => {},
+  resetSession: () => {},
 };
 
 const VideoContext = createContext<VideoState>(defaultVideoState);
@@ -49,7 +59,52 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
   const [currentVideoTitle, setCurrentVideoTitle] = useState<string | null>(null);
   const [playerError, setPlayerError] = useState<string | null>(null);
   const [selectedVideo, setSelectedVideo] = useState<YouTubeSearchResult | null>(null);
-  const sessionId = new Date().getTime().toString(); // Generate a unique session ID
+  const [sessionId, setSessionId] = useState<string>(new Date().getTime().toString());
+
+  // Save memory text to API
+  const saveMemory = useCallback(async (memoryText: string) => {
+    if (!selectedVideo || !memoryText.trim()) return;
+    
+    try {
+      const response = await fetch('/api/memories', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sessionId,
+          videoId: selectedVideo.id,
+          videoTitle: selectedVideo.title,
+          memoryText: memoryText.trim()
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save memory');
+      }
+      
+      return response.json();
+    } catch (error) {
+      console.error('Error saving memory:', error);
+      throw error;
+    }
+  }, [selectedVideo, sessionId]);
+
+  // Reset session (used when returning to dashboard)
+  const resetSession = useCallback(() => {
+    console.log('Resetting session in VideoContext');
+    // Generate a new session ID
+    const newSessionId = new Date().getTime().toString();
+    setSessionId(newSessionId);
+    
+    // Reset all video/player state
+    setVideoId(null);
+    setPlayer(null);
+    setIsPlaying(false);
+    setCurrentVideoTitle(null);
+    setPlayerError(null);
+    setSelectedVideo(null);
+  }, []);
 
   // Parse player state changes
   const handlePlayerStateChange = (state: number) => {
@@ -102,7 +157,9 @@ export const VideoProvider = ({ children }: { children: ReactNode }) => {
     setCurrentVideoTitle,
     setPlayerError,
     setSelectedVideo,
+    saveMemory,
     handlePlayerStateChange,
+    resetSession,
   };
 
   return <VideoContext.Provider value={value}>{children}</VideoContext.Provider>;

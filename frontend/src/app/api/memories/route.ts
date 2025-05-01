@@ -2,6 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 
+// Define the file structure interfaces
+interface Memory {
+  memoryText: string;
+  timestamp: number;
+}
+
+interface Song {
+  videoId: string;
+  videoTitle: string;
+  memories: Memory[];
+}
+
+interface SessionData {
+  sessionId: string;
+  songs: Song[];
+}
+
 export async function POST(req: NextRequest) {
     try {
         const data = await req.json();
@@ -11,56 +28,54 @@ export async function POST(req: NextRequest) {
         const dataDir = path.join(process.cwd(), 'data');
         await fs.mkdir(dataDir, { recursive: true });
 
-        // Ensure session directory exists
-        const sessionDir = path.join(dataDir, sessionId);
-        await fs.mkdir(sessionDir, { recursive: true });
-
-        // Try to find existing file for this video in this session
-        const files = await fs.readdir(sessionDir);
-        const existingFile = files.find(f => f.startsWith(videoId + '-'));
-
+        // Session file name - one file per session
+        const fileName = `session-${sessionId}.json`;
+        const filePath = path.join(dataDir, fileName);
+        
+        // Timestamp for the new memory
         const timestamp = Date.now();
 
-        if (existingFile) {
-            // If file exists, read it and append the new memory
-            const filePath = path.join(sessionDir, existingFile);
-            const fileContent = await fs.readFile(filePath, 'utf-8');
-            const existingData = JSON.parse(fileContent);
+        // Check if session file already exists
+        let sessionData: SessionData = {
+          sessionId: sessionId,
+          songs: []
+        };
 
-            // Convert single memory to array if needed
-            const memories = Array.isArray(existingData.memories) 
-                ? existingData.memories 
-                : [{
-                    memoryText: existingData.memoryText,
-                    timestamp: existingData.timestamp
-                }];
+        try {
+            const fileExists = await fs.stat(filePath).then(() => true).catch(() => false);
+            if (fileExists) {
+                // Read existing session file and parse its contents
+                const fileContent = await fs.readFile(filePath, 'utf-8');
+                sessionData = JSON.parse(fileContent);
+            }
+        } catch (error) {
+            console.error('Error checking or reading existing session file:', error);
+            // Continue with new session file if there's an error reading existing one
+        }
 
-            // Add new memory
-            memories.push({
+        // Find if song already exists in the session
+        const existingSongIndex = sessionData.songs.findIndex(song => song.videoId === videoId);
+        
+        if (existingSongIndex >= 0) {
+            // Song exists, add memory to this song
+            sessionData.songs[existingSongIndex].memories.push({
                 memoryText,
                 timestamp
             });
-
-            // Save updated data
-            await fs.writeFile(filePath, JSON.stringify({
-                videoId,
-                videoTitle,
-                memories
-            }, null, 2));
         } else {
-            // Create new file
-            const fileName = `${videoId}-${timestamp}.json`;
-            const filePath = path.join(sessionDir, fileName);
-            
-            await fs.writeFile(filePath, JSON.stringify({
+            // Song doesn't exist yet, add new song with this memory
+            sessionData.songs.push({
                 videoId,
                 videoTitle,
                 memories: [{
                     memoryText,
                     timestamp
                 }]
-            }, null, 2));
+            });
         }
+
+        // Save updated session data
+        await fs.writeFile(filePath, JSON.stringify(sessionData, null, 2));
 
         return NextResponse.json({ success: true });
     } catch (error) {
