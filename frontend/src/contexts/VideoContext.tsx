@@ -1,25 +1,19 @@
 'use client'
 
 import { createContext, useState, useContext, ReactNode, useCallback } from 'react';
-import type { YT } from '../types/youtube';
+import type { Player } from '../types/youtube';
 import { YouTubeSearchResult } from '../lib/youtube';
-
-// Define a Memory type
-interface Memory {
-  memoryText: string;
-  timestamp: number;
-}
 
 interface VideoState {
   videoId: string | null;
-  player: YT.Player | null;
+  player: Player | null;
   isPlaying: boolean;
   currentVideoTitle: string | null;
   playerError: string | null;
   selectedVideo: YouTubeSearchResult | null;
   sessionId: string;
   setVideoId: (id: string | null) => void;
-  setPlayer: (player: YT.Player | null) => void;
+  setPlayer: (player: Player | null) => void;
   setIsPlaying: (isPlaying: boolean) => void;
   setCurrentVideoTitle: (title: string | null) => void;
   setPlayerError: (error: string | null) => void;
@@ -54,7 +48,7 @@ export const useVideo = () => useContext(VideoContext);
 
 export const VideoProvider = ({ children }: { children: ReactNode }) => {
   const [videoId, setVideoId] = useState<string | null>(null);
-  const [player, setPlayer] = useState<YT.Player | null>(null);
+  const [player, setPlayer] = useState<Player | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentVideoTitle, setCurrentVideoTitle] = useState<string | null>(null);
   const [playerError, setPlayerError] = useState<string | null>(null);

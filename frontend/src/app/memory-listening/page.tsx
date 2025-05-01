@@ -18,10 +18,17 @@ export default function MemoryListening() {
 
         if (!state) return;
 
+        if (instruction === 'left' && selectedButton > 0) {
+            setSelectedButton(0); // Select the back button
+        }
+        else if (instruction === 'right' && selectedButton < 1) {
+            setSelectedButton(1); // Select the song select button
+        }
         else if (instruction === 'green') {
-            buttonRefs.current[1]?.click();
+            buttonRefs.current[selectedButton]?.click(); // Click the currently selected button
         }
         else if (instruction === 'red') {
+            // Directly go back to dashboard regardless of selection
             buttonRefs.current[0]?.click();
         }
     };

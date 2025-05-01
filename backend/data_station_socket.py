@@ -33,6 +33,7 @@ async def handle_input(joystick, buttons):
         # Detect joystick input
         joystick, stick_out = process_joystick_input(joystick)
         if stick_out:
+            print(stick_out)
             await broadcast_message(json.dumps(stick_out))
 
         # Detect button input

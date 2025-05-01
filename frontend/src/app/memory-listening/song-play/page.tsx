@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import YouTubePlayer from '../../../components/YouTubePlayer';
 import WebSocketListener from '../../../components/WebSocketListener';
-import type { YT } from '../../../types/youtube';
+import type { Player } from '../../../types/youtube';
 
 // Define YouTube player states
 const PlayerState = {
@@ -21,11 +21,11 @@ const PlayerState = {
 
 export default function SongPlay() {
   const router = useRouter();
-  const { selectedVideo, sessionId, saveMemory } = useVideo();
+  const { selectedVideo, saveMemory } = useVideo();
   const [isPlaying, setIsPlaying] = useState(false); // Start with false until player is ready
   const [memoryText, setMemoryText] = useState('');
   const [isSaving, setIsSaving] = useState(false);
-  const playerRef = useRef<YT.Player | null>(null);
+  const playerRef = useRef<Player | null>(null);
   const textInputRef = useRef<HTMLTextAreaElement>(null);
 
   // Add a ref for tracking button press time
@@ -40,7 +40,7 @@ export default function SongPlay() {
   }, [selectedVideo, router]);
 
   // Handle when player is ready
-  const handlePlayerReady = (player: YT.Player) => {
+  const handlePlayerReady = (player: Player) => {
     console.log("Player ready, storing reference");
     playerRef.current = player;
     

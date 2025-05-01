@@ -1,12 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useCallback, useState } from 'react';
-import type { YT } from '../types/youtube';
+import type { Player, PlayerEvent } from '../types/youtube';
 
 // Define YouTube Player types
 interface YouTubePlayerProps {
   videoId: string;
-  onPlayerReady?: (player: YT.Player) => void;
+  onPlayerReady?: (player: Player) => void;
   onStateChange?: (state: number) => void;
 }
 
@@ -19,7 +19,7 @@ export default function YouTubePlayer({
   onStateChange,
 }: YouTubePlayerProps) {
   const playerElementId = 'youtube-player-container';
-  const playerInstanceRef = useRef<YT.Player | null>(null);
+  const playerInstanceRef = useRef<Player | null>(null);
   const isPlayerReady = useRef<boolean>(false);
   const [currentVideoId, setCurrentVideoId] = useState<string | null>(null);
   const isInitializing = useRef<boolean>(false);
@@ -27,6 +27,59 @@ export default function YouTubePlayer({
   const retryCount = useRef<number>(0);
   const maxRetries = 3;
 
+  // Alternative embed method for error 150
+  const tryAlternativeEmbedMethod = useCallback((videoId: string) => {
+    console.log("Trying alternative embed method...");
+    const container = document.getElementById(playerElementId);
+    
+    if (!container) return;
+    
+    // Clear container
+    container.innerHTML = '';
+    
+    // Create iframe directly
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`;
+    iframe.width = "100%";
+    iframe.height = "100%";
+    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+    iframe.allowFullscreen = true;
+    iframe.style.border = "0";
+    
+    container.appendChild(iframe);
+    setPlayerError(null);
+    
+    // Try to get reference to player
+    setTimeout(() => {
+      if (window.YT && iframe.contentWindow) {
+        try {
+          const player = new window.YT.Player(iframe, {
+            videoId: videoId,
+            playerVars: {
+              autoplay: 1,
+              controls: 0,
+              disablekb: 1,
+              playsinline: 1,
+              modestbranding: 1,
+              origin: window.location.origin,
+              host: 'https://www.youtube-nocookie.com',
+              rel: 0
+            }
+          });
+          playerInstanceRef.current = player;
+          isPlayerReady.current = true;
+          setCurrentVideoId(videoId);
+          
+          if (onPlayerReady) {
+            onPlayerReady(player);
+          }
+        } catch (err) {
+          console.error("Failed to initialize alternate player:", err);
+        }
+      }
+    }, 2000);
+  }, [onPlayerReady, playerElementId]);
+  
   // Function to create the player with error handling
   const initializePlayer = useCallback(() => {
     // Return early if YouTube API is not loaded or already initializing
@@ -39,7 +92,9 @@ export default function YouTubePlayer({
     setPlayerError(null);
     setCurrentVideoId(videoId);
     
-    const player = new window.YT.Player(playerElementId, {
+    // Player creation happens here, but we don't need to store the reference
+    // since it will be available in the onReady event
+    new window.YT.Player(playerElementId, {
       videoId: videoId,
       playerVars: {
         autoplay: 1,      // Autoplay when ready
@@ -52,7 +107,7 @@ export default function YouTubePlayer({
         rel: 0            // Don't show related videos
       },
       events: {
-        onReady: (event: YT.PlayerEvent) => {
+        onReady: (event: { target: Player }) => {
           console.log("YouTube player ready");
           isPlayerReady.current = true;
           playerInstanceRef.current = event.target;
@@ -70,14 +125,14 @@ export default function YouTubePlayer({
             onPlayerReady(event.target);
           }
         },
-        onStateChange: (event: YT.PlayerEvent) => {
+        onStateChange: (event: PlayerEvent) => {
           console.log("YouTube state change:", event.data);
           // Call the onStateChange callback if provided
           if (onStateChange) {
             onStateChange(event.data);
           }
         },
-        onError: (event: YT.PlayerEvent) => {
+        onError: (event: PlayerEvent) => {
           console.error('YouTube Player Error:', event.data);
           isInitializing.current = false;
           
@@ -110,49 +165,8 @@ export default function YouTubePlayer({
         }
       }
     });
-  }, [videoId, onPlayerReady, onStateChange]);
+  }, [videoId, onPlayerReady, onStateChange, playerElementId, tryAlternativeEmbedMethod]);
   
-  // Alternative embed method for error 150
-  const tryAlternativeEmbedMethod = useCallback((videoId: string) => {
-    console.log("Trying alternative embed method...");
-    const container = document.getElementById(playerElementId);
-    
-    if (!container) return;
-    
-    // Clear container
-    container.innerHTML = '';
-    
-    // Create iframe directly
-    const iframe = document.createElement('iframe');
-    iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`;
-    iframe.width = "100%";
-    iframe.height = "100%";
-    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-    iframe.allowFullscreen = true;
-    iframe.style.border = "0";
-    
-    container.appendChild(iframe);
-    setPlayerError(null);
-    
-    // Try to get reference to player
-    setTimeout(() => {
-      if (window.YT && iframe.contentWindow) {
-        try {
-          const player = new window.YT.Player(iframe);
-          playerInstanceRef.current = player;
-          isPlayerReady.current = true;
-          setCurrentVideoId(videoId);
-          
-          if (onPlayerReady) {
-            onPlayerReady(player);
-          }
-        } catch (err) {
-          console.error("Failed to initialize alternate player:", err);
-        }
-      }
-    }, 2000);
-  }, [onPlayerReady]);
-
   // Load YouTube API and create player instance once
   useEffect(() => {
     // Load the YouTube API if not already loaded
@@ -182,7 +196,7 @@ export default function YouTubePlayer({
         setCurrentVideoId(null);
       }
     };
-  }, []); // Empty dependency array to ensure this only runs once
+  }, [initializePlayer]); // Empty dependency array to ensure this only runs once
 
   // Handle video ID changes - only load a new video if the ID has changed
   useEffect(() => {
@@ -252,7 +266,26 @@ export default function YouTubePlayer({
 // Add global type definition for YouTube
 declare global {
   interface Window {
-    YT?: any;
+    YT?: {
+      Player: new (elementId: string | HTMLElement, options: {
+        videoId: string;
+        playerVars?: {
+          autoplay?: number;
+          controls?: number;
+          disablekb?: number;
+          playsinline?: number;
+          modestbranding?: number;
+          origin?: string;
+          host?: string;
+          rel?: number;
+        };
+        events?: {
+          onReady?: (event: { target: Player }) => void;
+          onStateChange?: (event: { target: Player; data: number }) => void;
+          onError?: (event: { target: Player; data: number }) => void;
+        };
+      }) => Player;
+    };
     onYouTubeIframeAPIReady?: () => void;
   }
 }
