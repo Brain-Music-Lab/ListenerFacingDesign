@@ -40,18 +40,16 @@ export default function Dashboard() {
         }
     }, [currentPosition]); // Removed getCurrentIndex from dependencies
 
-    const handleInteraction = useCallback((message: Record<string, boolean>) => {
-        const [direction] = Object.entries(message)
-            .filter(([_, value]) => value)
-            .map(([key, _]) => key);
+    const handleInteraction = useCallback((message: { [key: string]: boolean }) => {
+        const [[instruction, state]] = Object.entries(message)
 
         
-        console.log("Received direction:", direction);
+        console.log("Received direction:", instruction);
         setCurrentPosition(([row, col]) => {
             let newRow = row;
             let newCol = col;
 
-            switch (direction) {
+            switch (instruction) {
                 case 'left':
                     if (col > 0) newCol = col - 1;
                     break;

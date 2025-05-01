@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 
 interface WebSocketListenerProps {
-    onMessage: (message: string) => void;
+    onMessage: (message: { [key: string]: boolean }) => void;
 }
 
 export default function WebSocketListener({ onMessage }: WebSocketListenerProps) {
