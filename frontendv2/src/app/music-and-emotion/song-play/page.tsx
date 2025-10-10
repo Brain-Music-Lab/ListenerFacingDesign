@@ -123,13 +123,13 @@ export default function Home() {
 
           case 4:
             if (instruction === 'red') {
-              buttonsRef.current[9]?.click()
-            }
-            if (instruction === 'green') {
               buttonsRef.current[10]?.click()
             }
-            if (instruction === 'blue') {
+            if (instruction === 'green') {
               buttonsRef.current[11]?.click()
+            }
+            if (instruction === 'blue') {
+              buttonsRef.current[9]?.click()
             }
             break;
 
@@ -202,8 +202,8 @@ export default function Home() {
       <div className="min-vh-100 d-flex align-items-center justify-content-center">
         <iframe 
           ref={videoRef}
-          width="0" 
-          height="0"
+          width="560" 
+          height="360"
           src={`https://www.youtube.com/embed/${songId}?enablejsapi=1`}
           title="YouTube video player">
         </iframe>
@@ -222,7 +222,7 @@ export default function Home() {
           </div>
           <div className="col-12 text-center">
             <div>
-              <h2>Use the joystick to change your selection and the Blue <div className="dot blue-dot">B1</div> buttonto (un)check boxes. Check each box that describes an emotion you feel while listening.</h2>
+              <h2>Use the joystick to change your selection and the Blue <div className="dot blue-dot">B1</div> button to check and uncheck boxes. Check each box that describes an emotion you feel while listening.</h2>
             </div>
           </div>
           

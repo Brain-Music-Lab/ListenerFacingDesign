@@ -40,7 +40,7 @@ export default function Home() {
               </div>
 
               <div className="col text-center mb-5">
-                <h3>Navigate between selections with the joystick, and press the green button (B1) to select one.</h3>
+                <h3>Choose one of the choices below!</h3>
               </div>
 
             </div>
