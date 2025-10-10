@@ -1,15 +1,29 @@
 'use client'
 
 import { useRouter } from "next/navigation";
+import { useRef } from "react";
+import WebSocketListener from "./components/WebSocketListener";
 
 export default function Home() {
   const router = useRouter();
+  const acceptButtonRef = useRef<HTMLButtonElement>(null);
+
+  const handleInteraction = (message: {[key: string]: boolean}) => {
+    const [[instruction, state]] = Object.entries(message);
+
+    if (!state) return;
+
+    if (instruction === "green") {
+      acceptButtonRef.current?.click();
+    }
+  }    
 
   return (
     <div className="container-fluid" style={{
             backgroundColor: "#CCCFCB",
             minHeight: "100vh"
         }}> 
+      <WebSocketListener onMessage={handleInteraction} />  
       <div className="min-vh-100 d-flex align-items-center">
         <div className="row row-cols-1">
         {/* Header */}
@@ -30,7 +44,8 @@ export default function Home() {
           {/* Button to go to the dashboard */}
           <div className="col text-center">
             <button className="green-interact w-25"
-              onClick={() => router.push("/dashboard")}>
+              onClick={() => router.push("/dashboard")}
+              ref={acceptButtonRef}>
               Accept (B4)
             </button>
           </div>

@@ -206,7 +206,7 @@ export default function Home() {
           width="0" 
           height="0"
           src={`https://www.youtube.com/embed/${songId}?enablejsapi=1`}
-          title="YouTube video player" >
+          title="YouTube video player">
         </iframe>
 
         {/* All of Part 1 */}
