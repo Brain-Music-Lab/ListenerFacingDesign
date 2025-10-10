@@ -1,15 +1,33 @@
 'use client'
 
 import { useRouter } from "next/navigation";
+import WebSocketListener from "../components/WebSocketListener";
+import { useRef } from "react";
 
 export default function Home() {
   const router = useRouter();
+  const continueBtnRef = useRef<HTMLButtonElement>(null);
+  const backButtonRef = useRef<HTMLButtonElement>(null);
+
+  const handleInteraction = (message: {[key: string]: boolean}) => {
+    const [[instruction, state]] = Object.entries(message);
+
+    if (!state) return;
+
+    if (instruction === "green") {
+      continueBtnRef.current?.click();
+    }
+    if (instruction === "red") {
+      backButtonRef.current?.click();
+    }
+  } 
 
   return (
     <div className="container-fluid" style={{
             backgroundColor: "#CCCFCB",
             minHeight: "100vh"
         }}> 
+      <WebSocketListener onMessage={handleInteraction} />
       <div className="min-vh-100 d-flex align-items-center justify-content-center">
         <div className="row row-cols-1">
 
@@ -29,7 +47,8 @@ export default function Home() {
               {/* Button 1 */}
               <div className="col text-center">
                 <button className="red-interact w-50"
-                  onClick={() => router.push("/dashboard")}>
+                  onClick={() => router.push("/dashboard")}
+                  ref={backButtonRef}>
                   <h5>Go Back (B3)</h5>
                 </button>
               </div>
@@ -37,7 +56,8 @@ export default function Home() {
               {/* Button 2 */}
               <div className="col text-center">
                 <button className="green-interact w-50"
-                  onClick={() => router.push("/music-and-emotion/song-search")}>
+                  onClick={() => router.push("/music-and-emotion/song-search")}
+                  ref={continueBtnRef}>
                     <h5>Continue (B4)</h5>
                 </button>
               </div>

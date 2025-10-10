@@ -4,12 +4,29 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import YTMusic from "ytmusic-api";
+import WebSocketListener from "@/app/components/WebSocketListener";
 
 export default function Home() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const searchQuery = useRef<string>('');
   const ytMusic = new YTMusic();
+
+  const continueBtnRef = useRef<HTMLButtonElement>(null);
+  const backButtonRef = useRef<HTMLButtonElement>(null);
+
+  const handleInteraction = (message: {[key: string]: boolean}) => {
+    const [[instruction, state]] = Object.entries(message);
+
+    if (!state) return;
+
+    if (instruction === "green") {
+      continueBtnRef.current?.click();
+    }
+    if (instruction === "red") {
+      backButtonRef.current?.click();
+    }
+  } 
 
   async function searchYTMusic(searchQuery: string) {
     setLoading(true);
@@ -42,6 +59,7 @@ export default function Home() {
             backgroundColor: "#CCCFCB",
             minHeight: "100vh"
         }}> 
+      <WebSocketListener onMessage={handleInteraction} />
       <div className="min-vh-100 d-flex align-items-center justify-content-center">
         <div className="row row-cols-1">
 
@@ -70,7 +88,8 @@ export default function Home() {
               {/* Button 1 */}
               <div className="col text-center">
                 <button className="red-interact w-50"
-                  onClick={() => router.push("/dashboard")}>
+                  onClick={() => router.push("/dashboard")}
+                  ref={backButtonRef}>
                   <h5>Go Back (B3)</h5>
                 </button>
               </div>
@@ -78,8 +97,9 @@ export default function Home() {
               {/* Button 2 */}
               <div className="col text-center">
                 <button className="green-interact w-50"
-                  onClick={() => searchYTMusic(searchQuery.current)}>
-                    <h5>{loading ? "Loading..." : "Continue (B4)"}</h5>
+                  onClick={() => searchYTMusic(searchQuery.current)}
+                  ref={continueBtnRef}>
+                    <h5>{loading ? "Loading..." : "Search (B4)"}</h5>
                 </button>
                 </div>
             </div>

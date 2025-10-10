@@ -45,7 +45,6 @@ export default function Home() {
   }, []);
 
   const handleInteraction = (message: {[key: string]: boolean}) => {
-      console.log(message);
         const [[instruction, state]] = Object.entries(message);
 
         if (!state) return;
