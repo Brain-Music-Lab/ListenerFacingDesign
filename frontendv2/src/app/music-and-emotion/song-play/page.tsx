@@ -44,27 +44,7 @@ export default function Home() {
     textBoxRef.current = el;
   }, []);
 
-  const [timer, setTimer] = useState(0);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (timer > 0) {
-      interval = setInterval(() => {
-        setTimer(prevTimer => prevTimer - 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [timer]);
-
-  const startTimer = () => {
-    setTimer(1);
-  };
-
-  useEffect(() => {
-    if (buttonsRef.current[5]) {
-      buttonsRef.current[5].disabled = timer > 0;
-    }
-  }, [timer]);
+  const [doubleCalled, setDoubleCalled] = useState(false);
 
   const handleInteraction = (message: {[key: string]: boolean}) => {
         const [[instruction, state]] = Object.entries(message);
@@ -93,7 +73,11 @@ export default function Home() {
               buttonsRef.current[1]?.click();
             }
             if (instruction === 'yellow') {
-              buttonsRef.current[2]?.click();
+              if (!doubleCalled) {
+                setDoubleCalled(true);
+              } else {
+                buttonsRef.current[2]?.click();
+              }
             }
             if (instruction === 'blue') {
               checkBoxRef1.current[selectedCheckboxQ1]?.click();
