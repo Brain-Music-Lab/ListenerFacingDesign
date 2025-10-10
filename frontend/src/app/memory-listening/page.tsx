@@ -9,9 +9,9 @@ export default function MemoryListening() {
     const [selectedButton, setSelectedButton] = useState<number>(1); // 0 for back, 1 for song select
     const buttonRefs = useRef<(HTMLButtonElement | null)[]>([null, null]);
 
-    const setButtonRef = useCallback((index: number) => (el: HTMLButtonElement | null) => {
+    const setButtonRef = (index: number) => (el: HTMLButtonElement | null) => {
         buttonRefs.current[index] = el;
-    }, []);
+    };
 
     const handleInteraction = (message: {[key: string]: boolean}) => {
         const [[instruction, state]] = Object.entries(message);

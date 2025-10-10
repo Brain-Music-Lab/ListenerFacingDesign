@@ -27,8 +27,10 @@ async def handle_input(joystick, buttons):
     """Handle console input and broadcast to all clients."""
     print("Reading")
     while True:
-        stuff = foo()
-        print(stuff)
+        stuff = input("Enter command: ")
+        if stuff:  # Only broadcast if we got valid input
+            message = json.dumps(stuff)
+            await broadcast_message(message)
         await asyncio.sleep(1)
 
 
