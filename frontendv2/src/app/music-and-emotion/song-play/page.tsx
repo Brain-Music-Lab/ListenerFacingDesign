@@ -17,9 +17,7 @@ interface MusicEmotionData {
 export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  if (!searchParams) {
-    return <div>Loading...</div>;
-  }
+  
   const videoRef = useRef<HTMLIFrameElement>(null);
   const checkBoxRef1 = useRef<(HTMLInputElement | null)[]>([null]);
   const checkBoxRef2 = useRef<(HTMLInputElement | null)[]>([null]);
