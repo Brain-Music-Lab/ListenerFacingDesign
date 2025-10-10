@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useRef, useCallback, useEffect } from "react";
 
 interface MusicEmotionData {
+  songId: string,
   emotion: {
     [key: string]: boolean
   },
@@ -144,12 +145,16 @@ export default function Home() {
         }
     };
 
+    const songId = searchParams.get('songId'); // Default if no songId provided
+
+
     const saveResponse = () => {
 
       const data: MusicEmotionData = {
         emotion: {},
         reason: {},
-        free_text: ''
+        free_text: '',
+        songId: ''
       };
 
       checkBoxRef1.current.forEach((checkbox) => {
@@ -174,6 +179,8 @@ export default function Home() {
 
       data.free_text = textBoxRef.current!.value;
       textBoxRef.current!.value = "";
+
+      data.songId = songId!;
       
       fetch('/api/save', {
         method: 'POST',
@@ -185,7 +192,6 @@ export default function Home() {
     };
   
   // Get the songId from URL parameters
-  const songId = searchParams.get('songId'); // Default if no songId provided
   
   function togglePlayback() {
     if (videoRef.current && videoRef.current.contentWindow) {
