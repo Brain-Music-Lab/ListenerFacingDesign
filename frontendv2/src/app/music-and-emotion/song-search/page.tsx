@@ -30,7 +30,7 @@ export default function Home() {
     }
 
     if (instruction == "blue") {
-      searchFieldRef.current?.click();
+      searchFieldRef.current?.focus();
     }
   } 
 
