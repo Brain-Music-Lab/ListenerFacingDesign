@@ -200,14 +200,18 @@ export default function Home() {
       <WebSocketListener onMessage={handleInteraction} />
       <div className="container-lg">
       <div className="min-vh-100 d-flex align-items-center justify-content-center">
-        <iframe 
+        
+        <div className="row">
+          <div className="col-12 text-center">
+          <iframe 
           ref={videoRef}
-          width="560" 
-          height="360"
+          width="300" 
+          height="200"
           src={`https://www.youtube.com/embed/${songId}?enablejsapi=1`}
           title="YouTube video player">
         </iframe>
-
+        </div>
+        <div className="col-12">
         {/* All of Part 1 */}
         <div className="row"
           style={{
@@ -819,6 +823,8 @@ export default function Home() {
             
           </div>
         </div>
+      </div>
+      </div>
       </div>
     </div>
   );
