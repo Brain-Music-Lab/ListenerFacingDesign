@@ -222,7 +222,7 @@ export default function Home() {
           </div>
           <div className="col-12 text-center">
             <div>
-              <h2>Use the joystick to change your selection and the blue button <div className="dot blue-dot">B1</div> to (un)check boxes. Check each box that describes an emotion you feel while listening.</h2>
+              <h2>Use the joystick to change your selection and the Blue <div className="dot blue-dot">B1</div> buttonto (un)check boxes. Check each box that describes an emotion you feel while listening.</h2>
             </div>
           </div>
           
@@ -439,7 +439,7 @@ export default function Home() {
           </div>
           <div className="col-12 text-center">
             <div>
-              <h2>Use the joystick to change your selection and the blue button <div style={{
+              <h2>Use the joystick to change your selection and the Blue <div style={{
               width: "50px",
               height: "50px",
               backgroundColor: "blue",
@@ -448,7 +448,7 @@ export default function Home() {
               display: "inline-block",
               color: "white",
               alignContent: "center"
-              }}>B1</div> to (un)check boxes. Now, check each box that represents a reason why the song makes you feel the way it does.</h2>
+              }}>B1</div> button to (un)check boxes. Now, check each box that represents a reason why the song makes you feel the way it does.</h2>
             </div>
           </div>
           
@@ -704,7 +704,7 @@ export default function Home() {
           </div>
           <div className="col-12 text-center">
             <div>
-              <h2>Press the blue button <div style={{
+              <h2>Press the Blue <div style={{
               width: "50px",
               height: "50px",
               backgroundColor: "blue",
@@ -713,7 +713,7 @@ export default function Home() {
               display: "inline-block",
               color: "white",
               alignContent: "center"
-              }}>B1</div> to activate the text box. Share anything else you'd like to about how and why the song makes you feel the way it does.</h2>
+              }}>B1</div> button to activate the text box. Share anything else you'd like to about how and why the song makes you feel the way it does.</h2>
             </div>
           </div>
           
