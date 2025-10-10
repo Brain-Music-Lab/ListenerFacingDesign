@@ -797,7 +797,7 @@ export default function Home() {
           <div className="col-4">
             <div className="mt-3 text-center">
             <button
-              onClick={() => router.push("/music-and-emotion/song-search")}
+              onClick={() => router.push("/dashboard")}
               className="blue-interact w-50"
               ref={setButtons(9)}>
               <h5>Return to Dashboard (B1)</h5>
