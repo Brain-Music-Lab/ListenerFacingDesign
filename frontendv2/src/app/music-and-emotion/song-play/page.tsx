@@ -65,15 +65,14 @@ export default function Home() {
             }
 
             if (instruction === 'red') {
-              buttonsRef.current[0]?.click()
+              buttonsRef.current[0]?.click();
             }
             if (instruction === 'green') {
-              buttonsRef.current[1]?.click()
+              buttonsRef.current[1]?.click();
             }
             if (instruction === 'yellow') {
-              buttonsRef.current[2]?.click()
+              buttonsRef.current[2]?.click();
             }
-
             if (instruction === 'blue') {
               checkBoxRef1.current[selectedCheckboxQ1]?.click();
             }
@@ -82,11 +81,11 @@ export default function Home() {
           case 2:
             if (instruction === 'left' && ![0, 4, 8, 12].includes(selectedCheckboxQ2)) {
               setSelectedCheckboxQ2(selectedCheckboxQ2 - 1);
-            } else if (instruction === 'right' && ![3, 7, 10, 15].includes(selectedCheckboxQ2)) {
+            } else if (instruction === 'right' && ![3, 7, 11, 15].includes(selectedCheckboxQ2)) {
               setSelectedCheckboxQ2(selectedCheckboxQ2 + 1);
             } else if (instruction === 'up' && selectedCheckboxQ2 >= 4) {
               setSelectedCheckboxQ2(selectedCheckboxQ2 - 4);
-            } else if (instruction === 'down' && selectedCheckboxQ2 <= 10) {
+            } else if (instruction === 'down' && selectedCheckboxQ2 <= 11) {
               setSelectedCheckboxQ2(selectedCheckboxQ2 + 4);
             }
 
@@ -423,7 +422,6 @@ export default function Home() {
               }}
               onClick={() => {
                 setQuestionNumber(2);
-                setCheckBoxesQ1(0);
               }}
               ref={setButtons(2)}
               >
