@@ -2,7 +2,7 @@
 
 import WebSocketListener from "@/app/components/WebSocketListener";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 interface MusicEmotionData {
   emotion: {
@@ -43,6 +43,28 @@ export default function Home() {
   const setTextArea = useCallback(() => (el: (HTMLTextAreaElement)) => {
     textBoxRef.current = el;
   }, []);
+
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (timer > 0) {
+      interval = setInterval(() => {
+        setTimer(prevTimer => prevTimer - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [timer]);
+
+  const startTimer = () => {
+    setTimer(1);
+  };
+
+  useEffect(() => {
+    if (buttonsRef.current[5]) {
+      buttonsRef.current[5].disabled = timer > 0;
+    }
+  }, [timer]);
 
   const handleInteraction = (message: {[key: string]: boolean}) => {
         const [[instruction, state]] = Object.entries(message);
