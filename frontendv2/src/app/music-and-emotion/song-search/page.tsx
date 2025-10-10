@@ -14,6 +14,7 @@ export default function Home() {
 
   const continueBtnRef = useRef<HTMLButtonElement>(null);
   const backButtonRef = useRef<HTMLButtonElement>(null);
+  const searchFieldRef = useRef<HTMLInputElement>(null);
 
   const handleInteraction = (message: {[key: string]: boolean}) => {
     const [[instruction, state]] = Object.entries(message);
@@ -23,8 +24,13 @@ export default function Home() {
     if (instruction === "green") {
       continueBtnRef.current?.click();
     }
+
     if (instruction === "red") {
       backButtonRef.current?.click();
+    }
+
+    if (instruction == "blue") {
+      searchFieldRef.current?.click();
     }
   } 
 
@@ -69,7 +75,7 @@ export default function Home() {
           </div>
 
           <div className="col text-center mb-5">
-            <h3>Music makes you feel things. But how? Why?</h3>
+            <h3>Press the Blue <div className="dot blue-dot">B1</div> button to activate the text field. Search for a song and artist that make you feel something.</h3>
           </div>
 
           <div className="col text-center mb-5">
@@ -78,6 +84,7 @@ export default function Home() {
               className="form-control w-50 mx-auto"
               placeholder="Search for a song and artist that make you feel something."
               onChange={((e) => (searchQuery.current = e.target.value))}
+              ref={searchFieldRef}
             />
           </div>
 
