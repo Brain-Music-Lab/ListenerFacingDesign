@@ -73,11 +73,7 @@ export default function Home() {
               buttonsRef.current[1]?.click();
             }
             if (instruction === 'yellow') {
-              if (!doubleCalled) {
-                setDoubleCalled(true);
-              } else {
-                buttonsRef.current[2]?.click();
-              }
+              buttonsRef.current[2]?.click();
             }
             if (instruction === 'blue') {
               checkBoxRef1.current[selectedCheckboxQ1]?.click();
@@ -102,8 +98,11 @@ export default function Home() {
               buttonsRef.current[4]?.click()
             }
             if (instruction === 'yellow') {
-              console.log("print");
-              buttonsRef.current[5]?.click()
+              if (!doubleCalled) {
+                setDoubleCalled(true);
+              } else {
+                buttonsRef.current[5]?.click()
+              }
             }
             
             if (instruction === 'blue') {
