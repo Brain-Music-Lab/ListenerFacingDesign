@@ -118,6 +118,7 @@ export default function Home() {
               buttonsRef.current[4]?.click()
             }
             if (instruction === 'yellow') {
+              console.log("print");
               buttonsRef.current[5]?.click()
             }
             
