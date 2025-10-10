@@ -28,7 +28,7 @@ export default function Home() {
             minHeight: "100vh"
         }}> 
       <WebSocketListener onMessage={handleInteraction} />  
-      <div className="min-vh-100 d-flex align-items-center">
+      <div className="min-vh-100 d-flex align-items-center justify-content-center">
         <div className="row row-cols-1">
 
           {/* Header and instructions */}
