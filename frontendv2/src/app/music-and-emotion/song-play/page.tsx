@@ -203,8 +203,8 @@ export default function Home() {
       <div className="min-vh-100 d-flex align-items-center justify-content-center">
         <iframe 
           ref={videoRef}
-          width="560" 
-          height="340"
+          width="0" 
+          height="0"
           src={`https://www.youtube.com/embed/${songId}?enablejsapi=1`}
           title="YouTube video player" >
         </iframe>
