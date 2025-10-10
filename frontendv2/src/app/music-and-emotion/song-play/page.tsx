@@ -117,7 +117,6 @@ export default function Home() {
             if (instruction === 'yellow') {
               buttonsRef.current[8]?.click()
             }
-            
             if (instruction === 'blue') {
               textBoxRef.current?.focus();
             }
@@ -204,11 +203,10 @@ export default function Home() {
       <div className="min-vh-100 d-flex align-items-center justify-content-center">
         <iframe 
           ref={videoRef}
-          width="0" 
-          height="0"
+          width="560" 
+          height="340"
           src={`https://www.youtube.com/embed/${songId}?enablejsapi=1`}
-          title="YouTube video player" 
-          allow="web-share">
+          title="YouTube video player" >
         </iframe>
 
         {/* All of Part 1 */}
@@ -476,7 +474,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-            <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 0 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -489,7 +487,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-            <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 1 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -502,7 +500,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-            <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 2 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -515,7 +513,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-            <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 3 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -528,7 +526,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-            <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 4 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -541,7 +539,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-            <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 5 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -554,7 +552,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-            <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 6 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -567,7 +565,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-            <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 7 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -580,7 +578,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-            <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 8 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -593,7 +591,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-            <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 9 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -606,7 +604,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-            <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 10 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -619,7 +617,7 @@ export default function Home() {
             </div>
             </div>
             <div className="col-3">
-              <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 11 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -632,7 +630,7 @@ export default function Home() {
               </div>
             </div>
             <div className="col-3">
-              <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 12 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -645,7 +643,7 @@ export default function Home() {
               </div>
             </div>
             <div className="col-3">
-              <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 13 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -658,7 +656,7 @@ export default function Home() {
               </div>
             </div>
             <div className="col-3">
-              <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 14 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
@@ -671,7 +669,7 @@ export default function Home() {
               </div>
             </div>
             <div className="col-3">
-              <div className="form-check mt-3 d-flex justify-content-center">
+            <div className={`form-check mt-3 d-flex justify-content-center ${selectedCheckboxQ2 == 15 ? 'checkbox-selected' : ''}`}>
               <input
               type="checkbox"
               className="form-check-input"
